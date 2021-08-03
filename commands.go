@@ -1,8 +1,8 @@
 package main
 
 import (
-	"errors"
-	"strings"
+  "encoding/json"
+  "fmt"
 )
 
 type Command interface {
@@ -19,9 +19,18 @@ type InsertCommand struct {
   data string
 }
 
-type QueryCommand struct {
+type FetchCommand struct {
+  limit int
+  collectionName string
+}
+
+type LookupCommand struct {
   collectionName string
   key string
+}
+
+type NoopCommand struct {
+
 }
 
 func (c CreateCollectionCommand) execute(s *Store) string {
@@ -40,7 +49,31 @@ func (c InsertCommand) execute(s *Store) string {
   }
 }
 
-func (c QueryCommand) execute(s *Store) string {
+func (c FetchCommand) execute(s *Store) string {
+  items := []string{}
+  numFoundItems := 0
+
+  fmt.Println(c)
+  for _, item := range s.Collections[c.collectionName].Items {
+
+    if numFoundItems == c.limit {
+      break
+    }
+
+    items = append(items, item.Data)
+    numFoundItems += 1
+  }
+
+  out, err := json.Marshal(items)
+
+  if err != nil {
+    panic (err)
+  }
+
+  return string(out)
+}
+
+func (c LookupCommand) execute(s *Store) string {
   item, presence := s.Collections[c.collectionName].ReadByKey(c.key)
 
   if presence {
@@ -50,17 +83,7 @@ func (c QueryCommand) execute(s *Store) string {
   }
 }
 
-func CommandParser(rawCommand string) (Command, error) {
-  seperatedCommandStrings := strings.Split(rawCommand, " ")
-
-  switch seperatedCommandStrings[0] {
-  case "CREATE":
-    return CreateCollectionCommand{collectionName: seperatedCommandStrings[1]}, nil
-  case "INSERT":
-    return InsertCommand{collectionName: seperatedCommandStrings[1], key: seperatedCommandStrings[2], data: seperatedCommandStrings[3]}, nil
-  case "QUERY":
-    return QueryCommand{collectionName: seperatedCommandStrings[1], key: seperatedCommandStrings[2]}, nil
-  default:
-    return nil, errors.New("Unknown instruction.")
-  }
+func (c NoopCommand) execute(s *Store) string {
+  return "NOOP"
 }
+

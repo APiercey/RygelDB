@@ -1,0 +1,9 @@
+DEFINE COLLECTION collection_name
+
+STORE INTO collection_name DATA
+
+FETCH ALL FROM collection_name WHERE data.property.value IS "twenty two"
+FETCH 1 FROM collection_name WHERE data.property.value IS "twenty two"
+FETCH 23 FROM collection_name WHERE data.property.value IS "twenty two"
+
+LOOKUP key IN collection_name
