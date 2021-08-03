@@ -1,4 +1,4 @@
-package main
+package store
 
 type Collection struct {
   Name string
@@ -10,7 +10,7 @@ func (c Collection) ReadByKey(key string) (Item, bool) {
   return item, presence
 }
 
-func (c *Collection) InsertItem(key string, data string) bool {
+func (c *Collection) InsertItem(key string, data map[string]interface{}) bool {
   c.Items[key] = Item{Key: key, Data: data}
   return true
 }

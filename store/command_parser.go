@@ -1,6 +1,7 @@
-package main
+package store
 
 import (
+	"encoding/json"
 	"errors"
 	"strconv"
 	"strings"
@@ -21,7 +22,15 @@ func buildInsertCommand(commandStrings []string) (Command, error) {
   if len(commandStrings) > 0 {
     switch commandStrings[0] {
     case "INTO":
-      return InsertCommand{collectionName: commandStrings[1], key: commandStrings[2], data: commandStrings[3]}, nil
+      var data map[string]interface{}
+
+      err := json.Unmarshal([]byte(commandStrings[3]), &data)
+
+      if err != nil {
+        return nil, errors.New("Could not parse data")
+      }
+
+      return InsertCommand{collectionName: commandStrings[1], key: commandStrings[2], data: data}, nil
     }
   }
 

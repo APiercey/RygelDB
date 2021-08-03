@@ -5,9 +5,10 @@ import (
 	"fmt"
 	"log"
 	"net"
+  "example.com/kv_store/store" 
 )
 
-func buildConnectionHandler(store *Store) func(conn net.Conn) {
+func buildConnectionHandler(currentStore *store.Store) func(conn net.Conn) {
   return func(conn net.Conn) {
     for {
       buffer, err := bufio.NewReader(conn).ReadBytes('\n')
@@ -20,7 +21,7 @@ func buildConnectionHandler(store *Store) func(conn net.Conn) {
 
       log.Println("Client message:", string(buffer[:len(buffer)-1]))
 
-      command, err := CommandParser(string(buffer[:len(buffer)-1]))
+      command, err := store.CommandParser(string(buffer[:len(buffer)-1]))
 
       if err != nil {
         fmt.Println(err.Error())
@@ -28,13 +29,19 @@ func buildConnectionHandler(store *Store) func(conn net.Conn) {
         return
       }
 
-      conn.Write([]byte(command.execute(store)))
+      result, store_was_updated := command.Execute(currentStore)
+
+      if store_was_updated {
+        currentStore.PersistToDisk()
+      }
+
+      conn.Write([]byte(result))
     }
   }
 }
 
 func main() {
-  store := BuildStore()
+  store := store.BuildStore("./store.db")
 
   startSocketServer(buildConnectionHandler(&store))
 }
