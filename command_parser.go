@@ -14,7 +14,7 @@ func buildDefineCommand(commandStrings []string) (Command, error) {
     }
   }
 
-  return NoopCommand{}, errors.New("Error parsing DEFINE COLLECTION statement")
+  return nil, errors.New("Error parsing DEFINE COLLECTION statement")
 }
 
 func buildInsertCommand(commandStrings []string) (Command, error) {
@@ -25,7 +25,7 @@ func buildInsertCommand(commandStrings []string) (Command, error) {
     }
   }
 
-  return NoopCommand{}, errors.New("Error parsing STORE INTO statement")
+  return nil, errors.New("Error parsing STORE INTO statement")
 }
 
 func buildFetchCommand(commandStrings []string) (Command, error) {

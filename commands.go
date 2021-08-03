@@ -29,10 +29,6 @@ type LookupCommand struct {
   key string
 }
 
-type NoopCommand struct {
-
-}
-
 func (c CreateCollectionCommand) execute(s *Store) string {
   if s.createCollection(c.collectionName) {
     return "OK"
@@ -82,8 +78,3 @@ func (c LookupCommand) execute(s *Store) string {
     return ""
   }
 }
-
-func (c NoopCommand) execute(s *Store) string {
-  return "NOOP"
-}
-
