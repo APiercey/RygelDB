@@ -22,22 +22,19 @@ func buildConnectionHandler(store *Store) func(conn net.Conn) {
 
       command, err := CommandParser(string(buffer[:len(buffer)-1]))
 
-      if err == nil {
-        item, err := command.execute(store)
-
-        if err == nil {
-          conn.Write([]byte(item.Data))
-        } else {
-          fmt.Println(err.Error())
-        }
-      } else {
+      if err != nil {
         fmt.Println(err.Error())
+        conn.Close()
+        return
       }
+
+      conn.Write([]byte(command.execute(store)))
     }
   }
 }
 
 func main() {
-  store := Store{Items: map[string]Item{}}
+  store := BuildStore()
+
   startSocketServer(buildConnectionHandler(&store))
 }

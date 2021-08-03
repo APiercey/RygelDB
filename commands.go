@@ -6,34 +6,47 @@ import (
 )
 
 type Command interface {
-  execute(store *Store) (*Item, error)
+  execute(store *Store) string
+}
+
+type CreateCollectionCommand struct {
+  collectionName string
 }
 
 type InsertCommand struct {
+  collectionName string
   key string
   data string
 }
 
 type QueryCommand struct {
+  collectionName string
   key string
 }
 
-func (c InsertCommand) execute(s *Store) (*Item, error) {
-  if s.InsertItem(c.key, c.data) {
-    item, _ := s.ReadByKey(c.key)
-    return &item, nil
+func (c CreateCollectionCommand) execute(s *Store) string {
+  if s.createCollection(c.collectionName) {
+    return "OK"
   } else {
-    return nil, errors.New("Could not store object.")
+    return "ERR"
   }
 }
 
-func (c QueryCommand) execute(s *Store) (*Item, error) {
-  item, presence := s.ReadByKey(c.key)
+func (c InsertCommand) execute(s *Store) string {
+  if s.InsertItem(c.collectionName, c.key, c.data) {
+    return "OK"
+  } else {
+    return "ERR"
+  }
+}
+
+func (c QueryCommand) execute(s *Store) string {
+  item, presence := s.Collections[c.collectionName].ReadByKey(c.key)
 
   if presence {
-    return &item, nil
+    return item.Data
   } else {
-    return nil, errors.New("Could not find object")
+    return ""
   }
 }
 
@@ -41,10 +54,12 @@ func CommandParser(rawCommand string) (Command, error) {
   seperatedCommandStrings := strings.Split(rawCommand, " ")
 
   switch seperatedCommandStrings[0] {
+  case "CREATE":
+    return CreateCollectionCommand{collectionName: seperatedCommandStrings[1]}, nil
   case "INSERT":
-    return InsertCommand{key: seperatedCommandStrings[1], data: seperatedCommandStrings[2]}, nil
+    return InsertCommand{collectionName: seperatedCommandStrings[1], key: seperatedCommandStrings[2], data: seperatedCommandStrings[3]}, nil
   case "QUERY":
-    return QueryCommand{key: seperatedCommandStrings[1]}, nil
+    return QueryCommand{collectionName: seperatedCommandStrings[1], key: seperatedCommandStrings[2]}, nil
   default:
     return nil, errors.New("Unknown instruction.")
   }
