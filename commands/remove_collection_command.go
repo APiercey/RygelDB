@@ -4,11 +4,11 @@ import (
   "example.com/kv_store/store" 
 )
 
-type UndefineCollectionCommand struct {
+type RemoveCollectionCommand struct {
   collectionName string
 }
 
-func (c UndefineCollectionCommand) Execute(s *store.Store) (string, bool) {
+func (c RemoveCollectionCommand) Execute(s *store.Store) (string, bool) {
   if s.UndefineCollection(c.collectionName) {
     return "OK", true
   } else {

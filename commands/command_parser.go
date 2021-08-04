@@ -18,17 +18,6 @@ func buildDefineCommand(commandStrings []string) (Command, error) {
   return nil, errors.New("Error parsing DEFINE COLLECTION statement")
 }
 
-func buildUndefineCommand(commandStrings []string) (Command, error) {
-  if len(commandStrings) > 0 {
-    switch commandStrings[0] {
-    case "COLLECTION":
-      return UndefineCollectionCommand{collectionName: commandStrings[1]}, nil
-    }
-  }
-
-  return nil, errors.New("Error parsing UNDEFINE COLLECTION statement")
-}
-
 func buildInsertCommand(commandStrings []string) (Command, error) {
   if len(commandStrings) > 0 {
     switch commandStrings[0] {
@@ -106,11 +95,11 @@ func buildRemoveItemCommand(commandStrings []string) (Command, error) {
     return nil, errors.New("Error parsing REMOVE statement. Unknown IN.")
   }
 
-  return RemoveCommand{collectionName: commandStrings[3], key: commandStrings[1]}, nil
+  return RemoveItemCommand{collectionName: commandStrings[3], key: commandStrings[1]}, nil
 }
 
 func buildRemoveCollectionCommand(commandStrings []string) (Command, error) {
-  return UndefineCollectionCommand{collectionName: commandStrings[1]}, nil
+  return RemoveCollectionCommand{collectionName: commandStrings[1]}, nil
 }
 
 func extractWhereStatements(commandStrings []string) []wherePredicate {
