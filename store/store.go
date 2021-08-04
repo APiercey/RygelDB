@@ -26,6 +26,17 @@ func (s *Store) CreateCollection(collectionName string) bool {
   return true
 }
 
+func (s *Store) UndefineCollection(collectionName string) bool {
+  _, ok := s.Collections[collectionName];
+
+  if ok {
+    delete(s.Collections, collectionName);
+    return true
+  } else {
+    return false
+  }
+}
+
 func (s *Store) InsertItem(collectionName string, item Item) bool {
   collectionRef, err := s.referenceCollection(collectionName) 
 

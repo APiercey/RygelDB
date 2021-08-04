@@ -1,10 +1,10 @@
 package commands
 
 import (
-	"encoding/json"
-	"errors"
-	"strconv"
-	"strings"
+  "encoding/json"
+  "errors"
+  "strconv"
+  "strings"
 )
 
 func buildDefineCommand(commandStrings []string) (Command, error) {
@@ -16,6 +16,17 @@ func buildDefineCommand(commandStrings []string) (Command, error) {
   }
 
   return nil, errors.New("Error parsing DEFINE COLLECTION statement")
+}
+
+func buildUndefineCommand(commandStrings []string) (Command, error) {
+  if len(commandStrings) > 0 {
+    switch commandStrings[0] {
+    case "COLLECTION":
+      return UndefineCollectionCommand{collectionName: commandStrings[1]}, nil
+    }
+  }
+
+  return nil, errors.New("Error parsing UNDEFINE COLLECTION statement")
 }
 
 func buildInsertCommand(commandStrings []string) (Command, error) {
@@ -74,15 +85,32 @@ func buildLookupCommand(commandStrings []string) (Command, error) {
 }
 
 func buildRemoveCommand(commandStrings []string) (Command, error) {
-  if len(commandStrings) < 3 {
+  if len(commandStrings) > 0 {
+    switch commandStrings[0] {
+    case "COLLECTION":
+      return buildRemoveCollectionCommand(commandStrings)
+    case "ITEM":
+      return buildRemoveItemCommand(commandStrings)
+    }
+  }
+
+  return nil, errors.New("Error parsing REMOVE statement.")
+}
+
+func buildRemoveItemCommand(commandStrings []string) (Command, error) {
+  if len(commandStrings) < 4 {
     return nil, errors.New("Error parsing REMOVE statement")
   }
 
-  if commandStrings[1] != "IN" {
+  if commandStrings[2] != "IN" {
     return nil, errors.New("Error parsing REMOVE statement. Unknown IN.")
   }
 
-  return RemoveCommand{collectionName: commandStrings[2], key: commandStrings[0]}, nil
+  return RemoveCommand{collectionName: commandStrings[3], key: commandStrings[1]}, nil
+}
+
+func buildRemoveCollectionCommand(commandStrings []string) (Command, error) {
+  return UndefineCollectionCommand{collectionName: commandStrings[1]}, nil
 }
 
 func extractWhereStatements(commandStrings []string) []wherePredicate {
@@ -111,12 +139,12 @@ func CommandParser(rawCommand string) (Command, error) {
     return buildDefineCommand(seperatedCommandStrings[1:])
   case "STORE":
     return buildInsertCommand(seperatedCommandStrings[1:])
+  case "REMOVE":
+    return buildRemoveCommand(seperatedCommandStrings[1:])
   case "FETCH":
     return buildFetchCommand(seperatedCommandStrings[1:])
   case "LOOKUP":
     return buildLookupCommand(seperatedCommandStrings[1:])
-  case "REMOVE":
-    return buildRemoveCommand(seperatedCommandStrings[1:])
   default:
     return nil, errors.New("Unknown instruction.")
   }
