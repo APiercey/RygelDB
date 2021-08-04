@@ -1,5 +1,7 @@
+# Create a Collection
 DEFINE COLLECTION collection_name
 
+# Store record into
 STORE INTO collection_name DATA
 
 FETCH ALL FROM collection_name WHERE data.property.value IS "twenty two"
@@ -7,3 +9,5 @@ FETCH 1 FROM collection_name WHERE data.property.value IS "twenty two"
 FETCH 23 FROM collection_name WHERE data.property.value IS "twenty two"
 
 LOOKUP key IN collection_name
+
+REMOVE key IN collection_name

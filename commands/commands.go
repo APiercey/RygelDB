@@ -2,8 +2,16 @@ package store
 
 import (
   "encoding/json"
-  "fmt"
 )
+
+type WherePredicate struct {
+  path string
+  value string
+}
+
+func (wp WherePredicate) filter(item Item) bool {
+  return item.Data[wp.path] == wp.value
+}
 
 type Command interface {
   Execute(store *Store) (result string, store_was_updated bool)
@@ -22,9 +30,15 @@ type InsertCommand struct {
 type FetchCommand struct {
   limit int
   collectionName string
+  wherePredicates []WherePredicate
 }
 
 type LookupCommand struct {
+  collectionName string
+  key string
+}
+
+type RemoveCommand struct {
   collectionName string
   key string
 }
@@ -38,7 +52,9 @@ func (c CreateCollectionCommand) Execute(s *Store) (string, bool) {
 }
 
 func (c InsertCommand) Execute(s *Store) (string, bool) {
-  if s.InsertItem(c.collectionName, c.key, c.data) {
+  item := BuildItem(c.key, c.data)
+
+  if s.InsertItem(c.collectionName, item) {
     return "OK", true
   } else {
     return "ERR", false
@@ -49,19 +65,29 @@ func (c FetchCommand) Execute(s *Store) (string, bool) {
   items := []string{}
   numFoundItems := 0
 
-  fmt.Println(c)
   for _, item := range s.Collections[c.collectionName].Items {
 
     if numFoundItems == c.limit {
       break
     }
 
-    out, err := json.Marshal(item.Data)
+    meetsPredicates := true
 
-    if err != nil { panic (err) }
+    Predicates:
+    for _, wp := range c.wherePredicates {
+      meetsPredicates = wp.filter(item)
 
-    items = append(items, string(out))
-    numFoundItems += 1
+      if !meetsPredicates { break Predicates }
+    }
+
+    if meetsPredicates {
+      out, err := json.Marshal(item.Data)
+
+      if err != nil { panic (err) }
+
+      items = append(items, string(out))
+      numFoundItems += 1
+    }
   }
 
   out, err := json.Marshal(items)
@@ -74,8 +100,6 @@ func (c FetchCommand) Execute(s *Store) (string, bool) {
 func (c LookupCommand) Execute(s *Store) (string, bool) {
   item, presence := s.Collections[c.collectionName].ReadByKey(c.key)
 
-  fmt.Println(item)
-
   if presence {
     out, err := json.Marshal(item.Data)
 
@@ -84,5 +108,13 @@ func (c LookupCommand) Execute(s *Store) (string, bool) {
     return string(out), false
   } else {
     return "", false
+  }
+}
+
+func (c RemoveCommand) Execute(s *Store) (string, bool) {
+  if s.RemoveItem(c.collectionName, c.key) {
+    return "OK", true
+  } else {
+    return "ERR", false
   }
 }

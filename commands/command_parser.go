@@ -46,8 +46,10 @@ func buildFetchCommand(commandStrings []string) (Command, error) {
     return nil, errors.New("Error parsing FETCH statement. Unknown FROM.")
   }
 
+  wps := extractWhereStatements(commandStrings[3:])
+
   if commandStrings[0] == "all" {
-    return FetchCommand{collectionName: commandStrings[2], limit: -1}, nil
+    return FetchCommand{collectionName: commandStrings[2], limit: -1, wherePredicates: wps}, nil
   } else {
     limit, err := strconv.Atoi(commandStrings[0])
 
@@ -55,7 +57,7 @@ func buildFetchCommand(commandStrings []string) (Command, error) {
       return nil, errors.New("Error parsing FETCH statement. Limit not understood") 
     }
 
-    return FetchCommand{collectionName: commandStrings[2], limit: limit}, nil
+    return FetchCommand{collectionName: commandStrings[2], limit: limit, wherePredicates: wps}, nil
   }
 }
 
@@ -71,6 +73,36 @@ func buildLookupCommand(commandStrings []string) (Command, error) {
   return LookupCommand{collectionName: commandStrings[2], key: commandStrings[0]}, nil
 }
 
+func buildRemoveCommand(commandStrings []string) (Command, error) {
+  if len(commandStrings) < 3 {
+    return nil, errors.New("Error parsing REMOVE statement")
+  }
+
+  if commandStrings[1] != "IN" {
+    return nil, errors.New("Error parsing REMOVE statement. Unknown IN.")
+  }
+
+  return RemoveCommand{collectionName: commandStrings[2], key: commandStrings[0]}, nil
+}
+
+func extractWhereStatements(commandStrings []string) []WherePredicate {
+  wherePredicates := []WherePredicate{}
+
+  for i := 0; i < len(commandStrings) - 3; i += 4 {
+    word := commandStrings[i]
+
+    if word == "WHERE" || word == "AND" {
+      wp := WherePredicate{path: commandStrings[i + 1], value: commandStrings[i + 3]}
+
+      wherePredicates = append(wherePredicates, wp)
+    } else {
+      break
+    }
+  }
+
+  return wherePredicates
+}
+
 func CommandParser(rawCommand string) (Command, error) {
   seperatedCommandStrings := strings.Split(rawCommand, " ")
 
@@ -83,6 +115,8 @@ func CommandParser(rawCommand string) (Command, error) {
     return buildFetchCommand(seperatedCommandStrings[1:])
   case "LOOKUP":
     return buildLookupCommand(seperatedCommandStrings[1:])
+  case "REMOVE":
+    return buildRemoveCommand(seperatedCommandStrings[1:])
   default:
     return nil, errors.New("Unknown instruction.")
   }

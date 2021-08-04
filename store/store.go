@@ -26,7 +26,7 @@ func (s *Store) CreateCollection(collectionName string) bool {
   return true
 }
 
-func (s *Store) InsertItem(collectionName string, key string, data map[string]interface{}) bool {
+func (s *Store) InsertItem(collectionName string, item Item) bool {
   collectionRef, err := s.referenceCollection(collectionName) 
 
   if err != nil {
@@ -34,9 +34,7 @@ func (s *Store) InsertItem(collectionName string, key string, data map[string]in
     return false
   }
 
-  collectionRef.InsertItem(key, data)
-
-  return true
+  return collectionRef.InsertItem(item)
 }
 
 func (s *Store) PersistToDisk() {
@@ -61,7 +59,7 @@ func (s *Store) loadFromDisk() {
   
   var collections map[string]Collection
 
-  file, err := os.Create(s.diskLocation)
+  file, err := os.Open(s.diskLocation)
 
   if err != nil {
     fmt.Println(err)
@@ -70,14 +68,23 @@ func (s *Store) loadFromDisk() {
   decoder := gob.NewDecoder(file)
   err = decoder.Decode(&collections)
 
-  fmt.Println(collections)
-
   if err != nil {
     fmt.Println(err)
     panic(err)
   }
 
   s.Collections = collections
+}
+
+func (s *Store) RemoveItem(collectionName string, key string) bool {
+  collectionRef, err := s.referenceCollection(collectionName) 
+
+  if err != nil {
+    fmt.Println(err)
+    return false
+  }
+
+  return collectionRef.RemoveItem(key)
 }
 
 func fileExists(filename string) bool {
