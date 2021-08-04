@@ -1,7 +1,7 @@
 package commands
 
 import (
-  "example.com/kv_store/store" 
+  "example.com/rygel/store" 
 )
 
 type DefineCollectionCommand struct {

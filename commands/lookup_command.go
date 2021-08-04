@@ -2,7 +2,7 @@ package commands
 
 import (
   "encoding/json"
-  "example.com/kv_store/store" 
+  "example.com/rygel/store" 
 )
 
 type LookupCommand struct {

@@ -3,7 +3,7 @@ package commands
 import (
 	"encoding/json"
 	"strings"
-	"example.com/kv_store/store"
+	"example.com/rygel/store"
 )
 
 type FetchCommand struct {

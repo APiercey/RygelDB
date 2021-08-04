@@ -1,4 +1,4 @@
-module example.com/kv_store
+module example.com/rygel
 
 go 1.15
 

@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"log"
 	"net"
-  "example.com/kv_store/store" 
-  "example.com/kv_store/commands" 
+  "example.com/rygel/store" 
+  "example.com/rygel/commands" 
 )
 
 func buildConnectionHandler(currentStore *store.Store) func(conn net.Conn) {
