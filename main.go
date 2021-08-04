@@ -6,6 +6,7 @@ import (
 	"log"
 	"net"
   "example.com/kv_store/store" 
+  "example.com/kv_store/commands" 
 )
 
 func buildConnectionHandler(currentStore *store.Store) func(conn net.Conn) {
@@ -21,7 +22,7 @@ func buildConnectionHandler(currentStore *store.Store) func(conn net.Conn) {
 
       log.Println("Client message:", string(buffer[:len(buffer)-1]))
 
-      command, err := store.CommandParser(string(buffer[:len(buffer)-1]))
+      command, err := commands.CommandParser(string(buffer[:len(buffer)-1]))
 
       if err != nil {
         fmt.Println(err.Error())

@@ -1,4 +1,4 @@
-package store
+package commands
 
 import (
 	"encoding/json"
@@ -85,14 +85,14 @@ func buildRemoveCommand(commandStrings []string) (Command, error) {
   return RemoveCommand{collectionName: commandStrings[2], key: commandStrings[0]}, nil
 }
 
-func extractWhereStatements(commandStrings []string) []WherePredicate {
-  wherePredicates := []WherePredicate{}
+func extractWhereStatements(commandStrings []string) []wherePredicate {
+  wherePredicates := []wherePredicate{}
 
   for i := 0; i < len(commandStrings) - 3; i += 4 {
     word := commandStrings[i]
 
     if word == "WHERE" || word == "AND" {
-      wp := WherePredicate{path: commandStrings[i + 1], value: commandStrings[i + 3]}
+      wp := wherePredicate{path: commandStrings[i + 1], value: commandStrings[i + 3]}
 
       wherePredicates = append(wherePredicates, wp)
     } else {
