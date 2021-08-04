@@ -2,7 +2,6 @@ package commands
 
 import (
 	"encoding/json"
-	"fmt"
 	"strings"
 	"example.com/kv_store/store"
 )
@@ -41,7 +40,8 @@ func (wp wherePredicate) filter(item store.Item) bool {
 }
 
 func (c FetchCommand) Execute(s *store.Store) (string, bool) {
-  items := []string{}
+  items := []map[string]interface{}{}
+
   numFoundItems := 0
 
   for _, item := range s.Collections[c.collectionName].Items {
@@ -60,11 +60,7 @@ func (c FetchCommand) Execute(s *store.Store) (string, bool) {
     }
 
     if meetsPredicates {
-      out, err := json.Marshal(item.Data)
-
-      if err != nil { panic (err) }
-
-      items = append(items, string(out))
+      items = append(items, item.Data)
       numFoundItems += 1
     }
   }

@@ -1,7 +1,7 @@
 package store
 
 import (
-	// "encoding/gob"
+	"encoding/json"
 	"fmt"
 	"os"
 )
@@ -38,42 +38,42 @@ func (s *Store) InsertItem(collectionName string, item Item) bool {
 }
 
 func (s *Store) PersistToDisk() {
-  // file, err := os.Create(s.diskLocation)
+  file, err := os.Create(s.diskLocation)
 
-  // if err != nil {
-  //   fmt.Println(err)
-  // }
+  if err != nil {
+    fmt.Println(err)
+  }
 
-  // encoder := gob.NewEncoder(file)
-  // err = encoder.Encode(s.Collections)
+  encoder := json.NewEncoder(file)
+  err = encoder.Encode(s.Collections)
 
-  // if err != nil {
-  //   fmt.Println(err)
-  // }
+  if err != nil {
+    fmt.Println(err)
+  }
 }
 
 func (s *Store) loadFromDisk() {
-  // if !fileExists(s.diskLocation) {
-  //   return
-  // }
+  if !fileExists(s.diskLocation) {
+    return
+  }
   
-  // var collections map[string]Collection
+  var collections map[string]Collection
 
-  // file, err := os.Open(s.diskLocation)
+  file, err := os.Open(s.diskLocation)
 
-  // if err != nil {
-  //   fmt.Println(err)
-  // }
+  if err != nil {
+    fmt.Println(err)
+  }
 
-  // decoder := gob.NewDecoder(file)
-  // err = decoder.Decode(&collections)
+  decoder := json.NewDecoder(file)
+  err = decoder.Decode(&collections)
 
-  // if err != nil {
-  //   fmt.Println(err)
-  //   panic(err)
-  // }
+  if err != nil {
+    fmt.Println(err)
+    panic(err)
+  }
 
-  // s.Collections = collections
+  s.Collections = collections
 }
 
 func (s *Store) RemoveItem(collectionName string, key string) bool {

@@ -16,6 +16,6 @@ func (c InsertCommand) Execute(s *store.Store) (string, bool) {
   if s.InsertItem(c.collectionName, item) {
     return "OK", true
   } else {
-    return "ERR", false
+    return "ERR Could not store document", false
   }
 }
