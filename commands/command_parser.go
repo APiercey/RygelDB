@@ -11,7 +11,7 @@ func buildDefineCommand(commandStrings []string) (Command, error) {
   if len(commandStrings) > 0 {
     switch commandStrings[0] {
     case "COLLECTION":
-      return CreateCollectionCommand{collectionName: commandStrings[1]}, nil
+      return DefineCollectionCommand{collectionName: commandStrings[1]}, nil
     }
   }
 

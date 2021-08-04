@@ -4,11 +4,11 @@ import (
   "example.com/kv_store/store" 
 )
 
-type CreateCollectionCommand struct {
+type DefineCollectionCommand struct {
   collectionName string
 }
 
-func (c CreateCollectionCommand) Execute(s *store.Store) (string, bool) {
+func (c DefineCollectionCommand) Execute(s *store.Store) (string, bool) {
   if s.CreateCollection(c.collectionName) {
     return "OK", true
   } else {
