@@ -44,7 +44,6 @@ Given the following data:
 DEFINE COLLECTION fruits
 STORE INTO fruits apple {"key":"apple","color":"red"}
 STORE INTO fruits orange {"key":"orange","color":"orange"}
-
 ```
 
 Querying for a single document would look like:
@@ -55,7 +54,17 @@ FETCH 1 FROM fruits
 
 Querying for all documents that meet a criteria:
 ```
-FETCH 1 FROM fruits WHERE color IS red
+FETCH all FROM fruits WHERE color IS red
 ```
 > [{"color":"red","key":"apple"}]
+
+It's possible to query based on deep properties and multiple WHERE clauses:
+```
+STORE INTO fruits orange {"key":"dragondruit","color":"red","properties":{"spikes":"many","internal_color":"white"}}
+FETCH all FROM fruits WHERE color IS red AND properties.internal_color IS white
+```
+> [{"color":"red","key":"dragondruit","properties":{"internal_color":"white","spikes":"many"}}]
+
+#### Remove data
+`REMOVE [COLLECTION | ITEM] collection_name [key]` removes either a collection or a document item in a colleciton. Key is mandatory when removing a document item.
 
