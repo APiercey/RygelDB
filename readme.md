@@ -80,7 +80,8 @@ FETCH all FROM fruits WHERE color IS red AND properties.internal_color IS white
 #### Remove data
 ```ruby
 REMOVE [COLLECTION | ITEM] collection_name [key]
-``` removes either a collection or a document item in a colleciton. Key is mandatory when removing a document item.
+```
+removes either a collection or a document item in a colleciton. Key is mandatory when removing a document item.
 
 ---
 
