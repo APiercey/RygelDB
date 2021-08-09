@@ -72,10 +72,10 @@ FETCH all FROM fruits WHERE color IS red
 
 It's possible to query based on deep properties and multiple WHERE clauses:
 ```ruby
-STORE INTO fruits orange {"key":"dragondruit","color":"red","properties":{"spikes":"many","internal_color":"white"}}
+STORE INTO fruits orange {"key":"dragonfruit","color":"red","properties":{"spikes":"many","internal_color":"white"}}
 FETCH all FROM fruits WHERE color IS red AND properties.internal_color IS white
 ```
-> [{"color":"red","key":"dragondruit","properties":{"internal_color":"white","spikes":"many"}}]
+> [{"color":"red","key":"dragonfruit","properties":{"internal_color":"white","spikes":"many"}}]
 
 #### Remove data
 ```ruby
