@@ -40,7 +40,7 @@ echo "DEFINE COLLECTION my_new_collection" | nc localhost 8080
 `FETCH [all | 1, ...n] FROM collection_name [WHERE path.of.document.properties IS value AND ...n]` queries data using 0 or many WHERE clauses and enforces either _all_ or a limit.
 
 Given the following data:
-```
+```ruby
 DEFINE COLLECTION fruits
 STORE INTO fruits apple {"key":"apple","color":"red"}
 STORE INTO fruits orange {"key":"orange","color":"orange"}
