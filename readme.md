@@ -1,5 +1,5 @@
 # RygelDB
-Rygel is a NoSQL document store using commands to store and query documents!
+[RygelDB](https://github.com/APiercey/RygelDB) is a NoSQL document store using commands to store and query documents!
 
 <img src="https://raw.githubusercontent.com/APiercey/RygelDB/main/sparky.png">
 
