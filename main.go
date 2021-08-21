@@ -9,6 +9,16 @@ import (
   "example.com/rygel/commands" 
 )
 
+func ExecuteStatementAgainstStore(currentStore *store.Store, statement string) (result string, store_was_updated bool) {
+  command, err := commands.CommandParser(statement)
+
+  if err != nil {
+    return err.Error(), false
+  }
+
+  return command.Execute(currentStore)
+}
+
 func buildConnectionHandler(currentStore *store.Store) func(conn net.Conn) {
   return func(conn net.Conn) {
     for {

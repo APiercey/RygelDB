@@ -98,6 +98,19 @@ func (s *Store) RemoveItem(collectionName string, key string) bool {
   return collectionRef.RemoveItem(key)
 }
 
+func (s *Store) AddIndex(collectionName string, index Index) bool {
+  collectionRef, err := s.referenceCollection(collectionName) 
+
+  if err != nil {
+    fmt.Println(err)
+    return false
+  }
+
+  collectionRef.AddIndex(index)
+
+  return true
+}
+
 func fileExists(filename string) bool {
     info, err := os.Stat(filename)
 

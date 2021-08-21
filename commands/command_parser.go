@@ -12,6 +12,8 @@ func buildDefineCommand(commandStrings []string) (Command, error) {
     switch commandStrings[0] {
     case "COLLECTION":
       return DefineCollectionCommand{collectionName: commandStrings[1]}, nil
+    case "INDEX":
+      return DefineIndexCommand{collectionName: commandStrings[3], path: commandStrings[1]}, nil
     }
   }
 

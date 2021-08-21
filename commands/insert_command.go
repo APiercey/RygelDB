@@ -11,7 +11,11 @@ type InsertCommand struct {
 }
 
 func (c InsertCommand) Execute(s *store.Store) (string, bool) {
-  item := store.BuildItem(c.key, c.data)
+  item, err := store.BuildItem(c.key, c.data)
+
+  if err != nil {
+    return err.Error(), false
+  }
 
   if s.InsertItem(c.collectionName, item) {
     return "OK", true

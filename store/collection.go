@@ -3,6 +3,7 @@ package store
 type Collection struct {
   Name string
   Items map[string]Item
+  indices map[string]Index
 }
 
 func (c Collection) ReadByKey(key string) (Item, bool) {
@@ -26,6 +27,13 @@ func (c *Collection) RemoveItem(key string) bool {
   }
 }
 
+func (c *Collection) AddIndex(index Index) {
+  c.indices[index.path] = index
+}
+
 func BuildCollection(collectionName string) Collection {
-  return Collection{Name: collectionName, Items: map[string]Item{}}
+  collection := Collection{Name: collectionName, Items: map[string]Item{}}
+  // collection.AddIndex(BuildIndex("__primaryId"))
+
+  return collection
 }
