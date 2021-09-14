@@ -4,12 +4,13 @@ import (
 	"strconv"
 
 	"example.com/rygel/store"
+	comp "example.com/rygel/comparisons" 
 )
 
 type RemoveItemCommand struct {
   collectionName string
   limit int
-  predicates PredicateCollection
+  predicates comp.PredicateCollection
 }
 
 func (c RemoveItemCommand) Execute(s *store.Store) (string, bool) {

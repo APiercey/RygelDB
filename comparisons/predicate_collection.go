@@ -1,4 +1,4 @@
-package commands
+package comparisons
 
 import (
 	"example.com/rygel/store"

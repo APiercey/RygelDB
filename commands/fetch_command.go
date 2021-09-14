@@ -4,12 +4,13 @@ import (
 	"encoding/json"
 
 	"example.com/rygel/store"
+	comp "example.com/rygel/comparisons"
 )
 
 type FetchCommand struct {
   limit int
   collectionName string
-  predicates PredicateCollection
+  predicates comp.PredicateCollection
 }
 
 func (c FetchCommand) Execute(s *store.Store) (string, bool) {

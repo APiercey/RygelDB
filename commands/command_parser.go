@@ -3,6 +3,7 @@ package commands
 import (
 	"encoding/json"
 	"errors"
+	comp "example.com/rygel/comparisons" 
 )
 
 type OperationWhereClause struct {
@@ -15,12 +16,12 @@ type Operation struct {
 	Operation string `json:"operation"`
 	CollectionName  string `json:"collection_name"`
 	Limit int `json:"limit"`
-	WherePredicates []WherePredicate `json:"where"`
+	WherePredicates []comp.WherePredicate `json:"where"`
 	Data map[string]interface{} `json:"data"`
 }
 
-func extractPredicateCollection(operation Operation) PredicateCollection {
-  predicates := BuildPredicateCollection()
+func extractPredicateCollection(operation Operation) comp.PredicateCollection {
+  predicates := comp.BuildPredicateCollection()
 
 	for _, wp := range operation.WherePredicates {
 			predicates.AddPredicate(wp)
@@ -41,7 +42,7 @@ func buildRemoveItemsCommand(operation Operation) (Command, error) {
 	return RemoveItemCommand{
       collectionName: operation.CollectionName,
       limit: operation.Limit,
-      predicates: BuildPredicateCollection(),
+      predicates: comp.BuildPredicateCollection(),
 	}, nil
 }
 
@@ -63,7 +64,7 @@ func buildFetchCommand(operation Operation) (Command, error) {
 func CommandParser(rawCommand string) (Command, error) {
 	operation := Operation{
 		Limit: -1,
-		WherePredicates: []WherePredicate{},
+		WherePredicates: []comp.WherePredicate{},
 	}
 
   json.Unmarshal([]byte(rawCommand), &operation)
