@@ -38,14 +38,21 @@ func (s *Store) UndefineCollection(collectionName string) bool {
 }
 
 func (s *Store) InsertItem(collectionName string, item Item) bool {
-  collectionRef, err := s.referenceCollection(collectionName) 
+  collection, present := s.Collections[collectionName]
 
-  if err != nil {
-    fmt.Println(err)
+  if !present {
+    fmt.Println("Collection does not exist")
     return false
   }
 
-  return collectionRef.InsertItem(item)
+  if !collection.InsertItem(item) {
+    fmt.Println("Could not insert item into collection")
+    return false
+  }
+
+  s.Collections[collectionName] = collection
+  
+  return true
 }
 
 func (s *Store) PersistToDisk() {
@@ -87,29 +94,29 @@ func (s *Store) loadFromDisk() {
   s.Collections = collections
 }
 
-func (s *Store) RemoveItem(collectionName string, key string) bool {
-  collectionRef, err := s.referenceCollection(collectionName) 
+// func (s *Store) RemoveItem(collectionName string, key string) bool {
+//   collectionRef, err := s.referenceCollection(collectionName) 
 
-  if err != nil {
-    fmt.Println(err)
-    return false
-  }
+//   if err != nil {
+//     fmt.Println(err)
+//     return false
+//   }
 
-  return collectionRef.RemoveItem(key)
-}
+//   return collectionRef.RemoveItem(key)
+// }
 
-func (s *Store) AddIndex(collectionName string, index Index) bool {
-  collectionRef, err := s.referenceCollection(collectionName) 
+// func (s *Store) AddIndex(collectionName string, index Index) bool {
+//   collectionRef, err := s.referenceCollection(collectionName) 
 
-  if err != nil {
-    fmt.Println(err)
-    return false
-  }
+//   if err != nil {
+//     fmt.Println(err)
+//     return false
+//   }
 
-  collectionRef.AddIndex(index)
+//   collectionRef.AddIndex(index)
 
-  return true
-}
+//   return true
+// }
 
 func fileExists(filename string) bool {
     info, err := os.Stat(filename)

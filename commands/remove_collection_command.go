@@ -15,3 +15,11 @@ func (c RemoveCollectionCommand) Execute(s *store.Store) (string, bool) {
     return "ERR Could not undefine collection", false
   }
 }
+func (c RemoveCollectionCommand) Valid() bool {
+  if c.collectionName == "" {
+    return false
+  }
+
+  return true
+}
+

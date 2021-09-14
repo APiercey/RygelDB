@@ -1,14 +1,14 @@
 package store
 
-// import (
-//   "errors"
-// )
-
 type Item struct {
-  Key string
   Data map[string]interface{}
+  IsStale bool
 }
 
-func BuildItem(key string, data map[string]interface{}) (Item, error) {
-  return Item{Key: key, Data: data}, nil
+func (i *Item) MarkAsStale() {
+  i.IsStale = true
+}
+
+func BuildItem(data map[string]interface{}) (Item, error) {
+  return Item{Data: data, IsStale: false}, nil
 }

@@ -3,7 +3,6 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"log"
 	"net"
   "example.com/rygel/store" 
   "example.com/rygel/commands" 
@@ -16,7 +15,13 @@ func ExecuteStatementAgainstStore(currentStore *store.Store, statement string) (
     return err.Error(), false
   }
 
-  return command.Execute(currentStore)
+  if !command.Valid() {
+    return "Command not valid", false
+  }
+
+  result, s := command.Execute(currentStore)
+
+  return result, s
 }
 
 func buildConnectionHandler(currentStore *store.Store) func(conn net.Conn) {
@@ -30,17 +35,7 @@ func buildConnectionHandler(currentStore *store.Store) func(conn net.Conn) {
         return
       }
 
-      log.Println("Client message:", string(buffer[:len(buffer)-1]))
-
-      command, err := commands.CommandParser(string(buffer[:len(buffer)-1]))
-
-      if err != nil {
-        fmt.Println(err.Error())
-        conn.Close()
-        return
-      }
-
-      result, store_was_updated := command.Execute(currentStore)
+      result, store_was_updated := ExecuteStatementAgainstStore(currentStore, string(buffer[:len(buffer)-1]))
 
       if store_was_updated {
         currentStore.PersistToDisk()

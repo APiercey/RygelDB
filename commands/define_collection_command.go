@@ -15,3 +15,12 @@ func (c DefineCollectionCommand) Execute(s *store.Store) (string, bool) {
     return "ERR Could not define collection", false
   }
 }
+
+func (c DefineCollectionCommand) Valid() bool {
+  if c.collectionName == "" {
+    return false
+  }
+
+  return true
+}
+
