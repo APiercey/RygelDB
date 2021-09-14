@@ -7,7 +7,7 @@ import (
 	comp "example.com/rygel/comparisons"
 )
 
-type Operation struct {
+type commandData struct {
 	Operation string `json:"operation"`
 	CollectionName  string `json:"collection_name"`
 	Limit int `json:"limit"`
@@ -15,67 +15,67 @@ type Operation struct {
 	Data map[string]interface{} `json:"data"`
 }
 
-func extractPredicateCollection(operation Operation) comp.PredicateCollection {
+func extractPredicateCollection(cmdData commandData) comp.PredicateCollection {
   predicates := comp.BuildPredicateCollection()
 
-	for _, wp := range operation.Predicates {
+	for _, wp := range cmdData.Predicates {
 			predicates.AddPredicate(wp)
   }
 
   return predicates
 }
 
-func buildDefineCollectionCommand(operation Operation) (Command, error) {
-	return DefineCollectionCommand{collectionName: operation.CollectionName}, nil
+func buildDefineCollectionCommand(cmdData commandData) (Command, error) {
+	return DefineCollectionCommand{collectionName: cmdData.CollectionName}, nil
 }
 
-func buildRemoveCollectionCommand(operation Operation) (Command, error) {
-	return RemoveCollectionCommand{collectionName: operation.CollectionName}, nil
+func buildRemoveCollectionCommand(cmdData commandData) (Command, error) {
+	return RemoveCollectionCommand{collectionName: cmdData.CollectionName}, nil
 }
 
-func buildRemoveItemsCommand(operation Operation) (Command, error) {
+func buildRemoveItemsCommand(cmdData commandData) (Command, error) {
 	return RemoveItemCommand{
-      collectionName: operation.CollectionName,
-      limit: operation.Limit,
+      collectionName: cmdData.CollectionName,
+      limit: cmdData.Limit,
       predicates: comp.BuildPredicateCollection(),
 	}, nil
 }
 
-func buildInsertItemCommand(operation Operation) (Command, error) {
+func buildInsertItemCommand(cmdData commandData) (Command, error) {
 	return InsertCommand{
-		collectionName: operation.CollectionName,
-		data: operation.Data,
+		collectionName: cmdData.CollectionName,
+		data: cmdData.Data,
 	}, nil
 }
 
-func buildFetchCommand(operation Operation) (Command, error) {
+func buildFetchCommand(cmdData commandData) (Command, error) {
 	return FetchCommand{
-		collectionName: operation.CollectionName,
-		limit: operation.Limit,
-		predicates: extractPredicateCollection(operation),
+		collectionName: cmdData.CollectionName,
+		limit: cmdData.Limit,
+		predicates: extractPredicateCollection(cmdData),
 	}, nil
 }
 
-func CommandParser(rawCommand string) (Command, error) {
-	operation := Operation{
+func CommandParser(input string) (Command, error) {
+	cmdData := commandData{
 		Limit: -1,
 		Predicates: []comp.Predicate{},
 	}
 
-  json.Unmarshal([]byte(rawCommand), &operation)
+  json.Unmarshal([]byte(input), &cmdData)
 
-	switch operation.Operation {
+	switch cmdData.Operation {
 	case "DEFINE COLLECTION":
-		return buildDefineCollectionCommand(operation)
+		return buildDefineCollectionCommand(cmdData)
 	case "REMOVE COLLECTION":
-		return buildRemoveCollectionCommand(operation)
+		return buildRemoveCollectionCommand(cmdData)
 	case "REMOVE ITEMS":
-		return buildRemoveItemsCommand(operation)
+		return buildRemoveItemsCommand(cmdData)
 	case "STORE":
-		return buildInsertItemCommand(operation)
+		return buildInsertItemCommand(cmdData)
 	case "FETCH":
-		return buildFetchCommand(operation)
+		return buildFetchCommand(cmdData)
 	default:
-		return nil, errors.New("Error, do not understand operation")
+		return nil, errors.New("Error, do not understand input")
 	}
 }
