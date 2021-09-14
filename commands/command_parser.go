@@ -7,12 +7,6 @@ import (
 	comp "example.com/rygel/comparisons"
 )
 
-type OperationWhereClause struct {
-	Path []string `json:"path"`
-	Operator string `json:"operator"`
-	Value interface{} `json:"value"`
-}
-
 type Operation struct {
 	Operation string `json:"operation"`
 	CollectionName  string `json:"collection_name"`

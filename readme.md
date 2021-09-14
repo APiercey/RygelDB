@@ -39,12 +39,6 @@ STORE INTO collection_name key {"data": "structure of document"}
 ```
 will store a document item.
 
-#### Lookup of direct data
-```ruby
-LOOKUP key IN collection_name
-```
-retrieves a document by key
-
 #### Querying data
 ```ruby
 FETCH [all | 1, ...n] FROM collection_name [WHERE path.of.document.properties IS value AND ...n]
