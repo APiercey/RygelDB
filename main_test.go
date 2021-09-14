@@ -236,21 +236,44 @@ func TestFetchItemWithGreaterThanWhereClause(t *testing.T) {
   }
 }
 
-// func TestFetchItemsMultipleWhereClause(t *testing.T) {
-//   testStore := setupStore()
-//   expected := `[{"foo":"bar","key":"test_item_one"}]`
+func TestFetchItemsMultipleWhereClause(t *testing.T) {
+  testStore := setupStore()
+  expected := `[{"health":50,"match":"me"},{"health":99,"match":"me"}]`
 
-//   ExecuteStatementAgainstStore(&testStore, `DEFINE COLLECTION test_collection`)
-//   ExecuteStatementAgainstStore(&testStore, `STORE INTO test_collection {"key":"test_item_one","foo":"bar"}`)
-//   ExecuteStatementAgainstStore(&testStore, `STORE INTO test_collection {"key":"test_item_two","foo":"bar"}`)
-//   result, _ := ExecuteStatementAgainstStore(&testStore, "FETCH 1 FROM test_collection WHERE foo IS bar AND key IS test_item_one")
+  ExecuteStatementAgainstStore(&testStore, `{
+    "operation": "DEFINE COLLECTION",
+    "collection_name": "test_collection"
+  }`)
+  ExecuteStatementAgainstStore(&testStore, `{ 
+    "operation": "STORE",
+    "collection_name": "test_collection",
+    "data": {"health": 50, "match":"me"}
+  }`)
+  ExecuteStatementAgainstStore(&testStore, `{ 
+    "operation": "STORE",
+    "collection_name": "test_collection",
+    "data": {"health": 99, "match":"me"}
+  }`)
+  ExecuteStatementAgainstStore(&testStore, `{ 
+    "operation": "STORE",
+    "collection_name": "test_collection",
+    "data": {"foo": "choo", "match":"me"}
+  }`)
+  result, _ := ExecuteStatementAgainstStore(&testStore, `{ 
+    "operation": "FETCH",
+    "collection_name": "test_collection",
+    "where": [
+      { "path": ["match"], "operator": "=", "value": "me" },
+      { "path": ["health"], "operator": ">=", "value": 50 }
+    ]
+  }`)
 
-//   if result != expected {
-//     t.Log("Expected: ", expected)
-//     t.Log("Received: ", result)
-//     t.Fail()
-//   }
-// }
+  if result != expected {
+    t.Log("Expected: ", expected)
+    t.Log("Received: ", result)
+    t.Fail()
+  }
+}
 
 // func TestFetchAllItems(t *testing.T) {
 //   testStore := setupStore()

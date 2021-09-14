@@ -3,7 +3,8 @@ package commands
 import (
 	"encoding/json"
 	"errors"
-	comp "example.com/rygel/comparisons" 
+
+	comp "example.com/rygel/comparisons"
 )
 
 type OperationWhereClause struct {
@@ -16,7 +17,7 @@ type Operation struct {
 	Operation string `json:"operation"`
 	CollectionName  string `json:"collection_name"`
 	Limit int `json:"limit"`
-	WherePredicates []comp.WherePredicate `json:"where"`
+	WherePredicates []comp.Predicate `json:"where"`
 	Data map[string]interface{} `json:"data"`
 }
 
@@ -64,7 +65,7 @@ func buildFetchCommand(operation Operation) (Command, error) {
 func CommandParser(rawCommand string) (Command, error) {
 	operation := Operation{
 		Limit: -1,
-		WherePredicates: []comp.WherePredicate{},
+		WherePredicates: []comp.Predicate{},
 	}
 
   json.Unmarshal([]byte(rawCommand), &operation)
