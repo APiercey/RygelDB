@@ -5,15 +5,15 @@ import (
 )
 
 type PredicateCollection struct {
-  wherePredicates []Predicate
+  predicates []Predicate
 }
 
 func (pc PredicateCollection) SatisfiedBy(item store.Item) bool {
-	if len(pc.wherePredicates) == 0 {
+	if len(pc.predicates) == 0 {
 		return true
 	}
 
-	for _, wp := range pc.wherePredicates {
+	for _, wp := range pc.predicates {
 		if !wp.Filter(item) {
 			return false
 		}
@@ -23,9 +23,9 @@ func (pc PredicateCollection) SatisfiedBy(item store.Item) bool {
 }
 
 func (pc *PredicateCollection) AddPredicate(predicate Predicate) {
-	pc.wherePredicates = append(pc.wherePredicates, predicate)
+	pc.predicates = append(pc.predicates, predicate)
 }
 
 func BuildPredicateCollection() PredicateCollection {
-  return PredicateCollection{wherePredicates: []Predicate{}}
+  return PredicateCollection{predicates: []Predicate{}}
 }

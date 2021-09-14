@@ -17,14 +17,14 @@ type Operation struct {
 	Operation string `json:"operation"`
 	CollectionName  string `json:"collection_name"`
 	Limit int `json:"limit"`
-	WherePredicates []comp.Predicate `json:"where"`
+	Predicates []comp.Predicate `json:"where"`
 	Data map[string]interface{} `json:"data"`
 }
 
 func extractPredicateCollection(operation Operation) comp.PredicateCollection {
   predicates := comp.BuildPredicateCollection()
 
-	for _, wp := range operation.WherePredicates {
+	for _, wp := range operation.Predicates {
 			predicates.AddPredicate(wp)
   }
 
@@ -65,7 +65,7 @@ func buildFetchCommand(operation Operation) (Command, error) {
 func CommandParser(rawCommand string) (Command, error) {
 	operation := Operation{
 		Limit: -1,
-		WherePredicates: []comp.Predicate{},
+		Predicates: []comp.Predicate{},
 	}
 
   json.Unmarshal([]byte(rawCommand), &operation)
