@@ -1,4 +1,4 @@
-package store
+package core
 
 import (
 	"example.com/rygel/common"

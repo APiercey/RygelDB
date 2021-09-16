@@ -4,7 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"net"
-  "example.com/rygel/store" 
+  "example.com/rygel/core" 
   "example.com/rygel/commands" 
   "example.com/rygel/services" 
   "example.com/rygel/servers" 
@@ -14,7 +14,7 @@ var storePersistenceService = services.StorePersistenceService{
   DiskLocation: "./store.db",
 }
 
-func ExecuteStatementAgainstStore(currentStore *store.Store, statement string) (result string, store_was_updated bool) {
+func ExecuteStatementAgainstStore(currentStore *core.Store, statement string) (result string, store_was_updated bool) {
   command, err := commands.CommandParser(statement)
 
   if err != nil {
@@ -30,7 +30,7 @@ func ExecuteStatementAgainstStore(currentStore *store.Store, statement string) (
   return result, s
 }
 
-func buildConnectionHandler(currentStore *store.Store) func(conn net.Conn) {
+func buildConnectionHandler(currentStore *core.Store) func(conn net.Conn) {
   return func(conn net.Conn) {
     for {
       buffer, err := bufio.NewReader(conn).ReadBytes('\n')
@@ -53,7 +53,7 @@ func buildConnectionHandler(currentStore *store.Store) func(conn net.Conn) {
 }
 
 func main() {
-  store := store.BuildStore()
+  store := core.BuildStore()
   storePersistenceService.LoadDataFromDisk(&store)
 
   servers.StartSocketServer(buildConnectionHandler(&store))

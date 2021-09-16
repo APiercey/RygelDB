@@ -3,7 +3,7 @@ package commands
 import (
 	"encoding/json"
 
-	"example.com/rygel/store"
+	"example.com/rygel/core"
 	comp "example.com/rygel/comparisons"
 )
 
@@ -13,7 +13,7 @@ type FetchCommand struct {
   predicates comp.PredicateCollection
 }
 
-func (c FetchCommand) Execute(s *store.Store) (string, bool) {
+func (c FetchCommand) Execute(s *core.Store) (string, bool) {
   items := []map[string]interface{}{}
 
   numFoundItems := 0

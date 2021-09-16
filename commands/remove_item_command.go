@@ -3,7 +3,7 @@ package commands
 import (
 	"strconv"
 
-	"example.com/rygel/store"
+	"example.com/rygel/core"
 	comp "example.com/rygel/comparisons" 
 )
 
@@ -13,7 +13,7 @@ type RemoveItemCommand struct {
   predicates comp.PredicateCollection
 }
 
-func (c RemoveItemCommand) Execute(s *store.Store) (string, bool) {
+func (c RemoveItemCommand) Execute(s *core.Store) (string, bool) {
   numFoundItems := 0
 
   collection := s.Collections[c.collectionName]

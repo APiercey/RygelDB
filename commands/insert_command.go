@@ -1,7 +1,7 @@
 package commands
 
 import (
-	"example.com/rygel/store"
+	"example.com/rygel/core"
 )
 
 type InsertCommand struct {
@@ -9,8 +9,8 @@ type InsertCommand struct {
   data map[string]interface{}
 }
 
-func (c InsertCommand) Execute(s *store.Store) (string, bool) {
-  item, err := store.BuildItem(c.data)
+func (c InsertCommand) Execute(s *core.Store) (string, bool) {
+  item, err := core.BuildItem(c.data)
 
   if err != nil {
     return err.Error(), false

@@ -2,11 +2,11 @@ package main
 
 import (
 	"testing"
-	"example.com/rygel/store"
+	"example.com/rygel/core"
 )
 
-func setupStore() store.Store {
-  testStore := store.BuildStore()
+func setupStore() core.Store {
+  testStore := core.BuildStore()
 
   return testStore
 }

@@ -1,10 +1,10 @@
 package commands
 
 import (
-  "example.com/rygel/store" 
+  "example.com/rygel/core" 
 )
 
 type Command interface {
-  Execute(store *store.Store) (result string, store_was_updated bool)
+  Execute(store *core.Store) (result string, store_was_updated bool)
   Valid() bool
 }

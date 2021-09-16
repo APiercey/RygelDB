@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-  "example.com/rygel/store" 
+  "example.com/rygel/core" 
 )
 
 type StorePersistenceService struct {
@@ -20,12 +20,12 @@ func fileExists(diskLocation string) bool {
     return !info.IsDir()
 }
 
-func (service StorePersistenceService) LoadDataFromDisk(_store *store.Store) {
+func (service StorePersistenceService) LoadDataFromDisk(store *core.Store) {
   if !fileExists(service.DiskLocation) {
     return
   }
   
-  var collections map[string]store.Collection
+  var collections map[string]core.Collection
 
   file, err := os.Open(service.DiskLocation)
 
@@ -41,10 +41,10 @@ func (service StorePersistenceService) LoadDataFromDisk(_store *store.Store) {
     panic(err)
   }
 
-  _store.Collections = collections
+  store.Collections = collections
 }
 
-func (service StorePersistenceService) PersistDataToDisk(_store *store.Store) {
+func (service StorePersistenceService) PersistDataToDisk(store *core.Store) {
   file, err := os.Create(service.DiskLocation)
 
   if err != nil {
@@ -52,7 +52,7 @@ func (service StorePersistenceService) PersistDataToDisk(_store *store.Store) {
   }
 
   encoder := json.NewEncoder(file)
-  err = encoder.Encode(_store.Collections)
+  err = encoder.Encode(store.Collections)
 
   if err != nil {
     fmt.Println(err)

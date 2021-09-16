@@ -1,14 +1,14 @@
 package commands
 
 import (
-  "example.com/rygel/store" 
+  "example.com/rygel/core" 
 )
 
 type RemoveCollectionCommand struct {
   collectionName string
 }
 
-func (c RemoveCollectionCommand) Execute(s *store.Store) (string, bool) {
+func (c RemoveCollectionCommand) Execute(s *core.Store) (string, bool) {
   if s.UndefineCollection(c.collectionName) {
     return "OK", true
   } else {

@@ -1,14 +1,14 @@
 package comparisons
 
 import (
-	"example.com/rygel/store"
+	"example.com/rygel/core"
 )
 
 type PredicateCollection struct {
   predicates []Predicate
 }
 
-func (pc PredicateCollection) SatisfiedBy(item store.Item) bool {
+func (pc PredicateCollection) SatisfiedBy(item core.Item) bool {
 	if len(pc.predicates) == 0 {
 		return true
 	}

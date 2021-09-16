@@ -1,7 +1,7 @@
 package comparisons
 
 import (
-	"example.com/rygel/store"
+	"example.com/rygel/core"
 	"example.com/rygel/common"
 )
 
@@ -11,7 +11,7 @@ type Predicate struct {
 	Value interface{} `json:"value"`
 }
 
-func (wp Predicate) SatisfiedBy(item store.Item) bool {
+func (wp Predicate) SatisfiedBy(item core.Item) bool {
   if item.IsStale { return false }
 
   value, presence := item.PluckValueOnPath(common.DataPath{RealPath: wp.Path})
@@ -46,7 +46,7 @@ func (wp Predicate) compare(value interface{}) bool {
   }
 }
 
-func (wp Predicate) pluckValue(item store.Item) (interface{}, bool) {
+func (wp Predicate) pluckValue(item core.Item) (interface{}, bool) {
   steps := wp.Path[:len(wp.Path) - 1]
   key := wp.Path[len(wp.Path) - 1]
 

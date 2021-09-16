@@ -1,4 +1,4 @@
-package store
+package core
 
 type Collection struct {
   Name string

@@ -1,7 +1,7 @@
 package commands
 
 import (
-  "example.com/rygel/store" 
+  "example.com/rygel/core" 
 )
 
 type DefineIndexCommand struct {
@@ -9,7 +9,7 @@ type DefineIndexCommand struct {
   path string
 }
 
-func (c DefineIndexCommand) Execute(s *store.Store) (string, bool) {
+func (c DefineIndexCommand) Execute(s *core.Store) (string, bool) {
   // index := store.BuildIndex(c.path)
 
   // if s.AddIndex(c.collectionName, index) {

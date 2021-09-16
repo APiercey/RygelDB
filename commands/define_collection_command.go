@@ -1,14 +1,14 @@
 package commands
 
 import (
-  "example.com/rygel/store" 
+  "example.com/rygel/core" 
 )
 
 type DefineCollectionCommand struct {
   collectionName string
 }
 
-func (c DefineCollectionCommand) Execute(s *store.Store) (string, bool) {
+func (c DefineCollectionCommand) Execute(s *core.Store) (string, bool) {
   if s.CreateCollection(c.collectionName) {
     return "OK", true
   } else {
