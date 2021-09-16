@@ -1,4 +1,4 @@
-package main
+package servers
 
 import (
   "fmt"
@@ -12,7 +12,7 @@ const (
   connType = "tcp"
 )
 
-func startSocketServer(connectionHandler func (conn net.Conn)) {
+func StartSocketServer(connectionHandler func (conn net.Conn)) {
   fmt.Println("Starting " + connType + " server on " + connHost + ":" + connPort)
 
   l, err := net.Listen(connType, connHost+":"+connPort)

@@ -3,13 +3,8 @@ package store
 type Collection struct {
   Name string
   Items []Item
-  // indices map[string]Index
+  indices map[string]Index
 }
-
-// func (c Collection) ReadByKey(key string) (Item, bool) {
-//   item, presence := c.Items[key]
-//   return item, presence
-// }
 
 func (c *Collection) InsertItem(item Item) bool {
   c.Items = append(c.Items, item)

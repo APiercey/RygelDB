@@ -6,7 +6,13 @@ import (
 	"net"
   "example.com/rygel/store" 
   "example.com/rygel/commands" 
+  "example.com/rygel/services" 
+  "example.com/rygel/servers" 
 )
+
+var storePersistenceService = services.StorePersistenceService{
+  DiskLocation: "./store.db",
+}
 
 func ExecuteStatementAgainstStore(currentStore *store.Store, statement string) (result string, store_was_updated bool) {
   command, err := commands.CommandParser(statement)
@@ -38,7 +44,7 @@ func buildConnectionHandler(currentStore *store.Store) func(conn net.Conn) {
       result, store_was_updated := ExecuteStatementAgainstStore(currentStore, string(buffer[:len(buffer)-1]))
 
       if store_was_updated {
-        currentStore.PersistToDisk()
+        storePersistenceService.PersistDataToDisk(currentStore)
       }
 
       conn.Write([]byte(result))
@@ -47,7 +53,8 @@ func buildConnectionHandler(currentStore *store.Store) func(conn net.Conn) {
 }
 
 func main() {
-  store := store.BuildStore("./store.db")
+  store := store.BuildStore()
+  storePersistenceService.LoadDataFromDisk(&store)
 
-  startSocketServer(buildConnectionHandler(&store))
+  servers.StartSocketServer(buildConnectionHandler(&store))
 }

@@ -6,7 +6,7 @@ import (
 )
 
 func setupStore() store.Store {
-  testStore := store.BuildStore("/tmp")
+  testStore := store.BuildStore()
 
   return testStore
 }

@@ -14,7 +14,7 @@ func (pc PredicateCollection) SatisfiedBy(item store.Item) bool {
 	}
 
 	for _, wp := range pc.predicates {
-		if !wp.Filter(item) {
+		if !wp.SatisfiedBy(item) {
 			return false
 		}
 	}

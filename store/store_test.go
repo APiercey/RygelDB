@@ -5,7 +5,7 @@ import (
 )
 
 func TestCreateCollection(t *testing.T) {
-  store := BuildStore("/tmp")
+  store := BuildStore()
 
   if !store.CreateCollection("flowers") {
     t.Log("Could not create collection")
@@ -19,7 +19,7 @@ func TestCreateCollection(t *testing.T) {
 }
 
 func TestStoreInsertItem(t *testing.T) {
-  store := BuildStore("/tmp")
+  store := BuildStore()
   store.CreateCollection("flowers")
 
   item, _ := BuildItem(map[string]interface{}{

@@ -1,4 +1,5 @@
 package comparisons
+
 import (
 	"reflect"
 )

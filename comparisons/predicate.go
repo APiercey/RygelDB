@@ -1,8 +1,8 @@
 package comparisons
 
 import (
-
 	"example.com/rygel/store"
+	"example.com/rygel/common"
 )
 
 type Predicate struct {
@@ -11,8 +11,10 @@ type Predicate struct {
 	Value interface{} `json:"value"`
 }
 
-func (wp Predicate) Filter(item store.Item) bool {
-  value, presence := wp.pluckValue(item)
+func (wp Predicate) SatisfiedBy(item store.Item) bool {
+  if item.IsStale { return false }
+
+  value, presence := item.PluckValueOnPath(common.DataPath{RealPath: wp.Path})
 
   if !presence { return false }
 
@@ -23,16 +25,22 @@ func (wp Predicate) compare(value interface{}) bool {
   switch wp.Operator {
     case "=":
       return equals(value, wp.Value)
+
     case "!=":
       return notEquals(value, wp.Value)
+
     case ">":
       return greaterThan(value, wp.Value)
+
     case ">=":
       return greaterThanOrEqual(value, wp.Value)
+
     case "<":
       return lessThan(value, wp.Value)
+
     case "<=":
       return lessThanOrEqual(value, wp.Value)
+
     default:
       return false
   }

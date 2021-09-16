@@ -1,13 +1,10 @@
 package store
 
 import (
-	"encoding/json"
 	"fmt"
-	"os"
 )
 
 type Store struct {
-  diskLocation string
   Collections map[string]Collection
 }
 
@@ -55,45 +52,6 @@ func (s *Store) InsertItem(collectionName string, item Item) bool {
   return true
 }
 
-func (s *Store) PersistToDisk() {
-  file, err := os.Create(s.diskLocation)
-
-  if err != nil {
-    fmt.Println(err)
-  }
-
-  encoder := json.NewEncoder(file)
-  err = encoder.Encode(s.Collections)
-
-  if err != nil {
-    fmt.Println(err)
-  }
-}
-
-func (s *Store) loadFromDisk() {
-  if !fileExists(s.diskLocation) {
-    return
-  }
-  
-  var collections map[string]Collection
-
-  file, err := os.Open(s.diskLocation)
-
-  if err != nil {
-    fmt.Println(err)
-  }
-
-  decoder := json.NewDecoder(file)
-  err = decoder.Decode(&collections)
-
-  if err != nil {
-    fmt.Println(err)
-    panic(err)
-  }
-
-  s.Collections = collections
-}
-
 // func (s *Store) RemoveItem(collectionName string, key string) bool {
 //   collectionRef, err := s.referenceCollection(collectionName) 
 
@@ -118,17 +76,9 @@ func (s *Store) loadFromDisk() {
 //   return true
 // }
 
-func fileExists(filename string) bool {
-    info, err := os.Stat(filename)
 
-    if os.IsNotExist(err) { return false }
-
-    return !info.IsDir()
-}
-
-func BuildStore(diskLocation string) Store {
-  store := Store{Collections: map[string]Collection{}, diskLocation: diskLocation}
-  store.loadFromDisk()
+func BuildStore() Store {
+  store := Store{Collections: map[string]Collection{}}
 
   return store
 }
