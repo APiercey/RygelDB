@@ -3,6 +3,7 @@ package comparisons
 import (
 	"testing"
 
+	"example.com/rygel/common"
 	"example.com/rygel/core"
 )
 
@@ -11,7 +12,7 @@ func TestFilteringByEquals(t *testing.T) {
     "test": 1,
   })
 
-  predicate := Predicate{Path: []string{"test"}, Operator: "=", Value: 1}
+  predicate := Predicate{Path: common.DataPath{RealPath: []string{"test"}}, Operator: "=", Value: 1}
 
   if !predicate.SatisfiedBy(item) {
     t.Log("= operator is broken")
@@ -24,7 +25,7 @@ func TestFilteringByNotEquals(t *testing.T) {
     "test": 1,
   })
 
-  predicate := Predicate{Path: []string{"test"}, Operator: "1=", Value: 2}
+  predicate := Predicate{Path: common.DataPath{RealPath: []string{"test"}}, Operator: "1=", Value: 2}
 
   if predicate.SatisfiedBy(item) {
     t.Log("> operator is broken")
@@ -37,7 +38,7 @@ func TestFilteringByGreaterThan(t *testing.T) {
     "test": 1,
   })
 
-  predicate := Predicate{Path: []string{"test"}, Operator: ">", Value: 0}
+  predicate := Predicate{Path: common.DataPath{RealPath: []string{"test"}}, Operator: ">", Value: 0}
 
   if predicate.SatisfiedBy(item) {
     t.Log("> operator is broken")
@@ -50,7 +51,7 @@ func TestFilteringByGreaterThanOrEquals(t *testing.T) {
     "test": 1,
   })
 
-  predicate := Predicate{Path: []string{"test"}, Operator: ">=", Value: 1}
+  predicate := Predicate{Path: common.DataPath{RealPath: []string{"test"}}, Operator: ">=", Value: 1}
 
   if predicate.SatisfiedBy(item) {
     t.Log("> operator is broken")
@@ -65,7 +66,7 @@ func TestFilteringStaleItems(t *testing.T) {
 
   item.MarkAsStale()
 
-  predicate := Predicate{Path: []string{"Birds of Paradise"}, Operator: "=", Value: 1}
+  predicate := Predicate{Path: common.DataPath{RealPath: []string{"test"}}, Operator: "=", Value: 1}
 
   if predicate.SatisfiedBy(item) {
     t.Log("Does not filter ignore stale items")
@@ -78,7 +79,7 @@ func TestFilteringByLessThan(t *testing.T) {
     "test": 1,
   })
 
-  predicate := Predicate{Path: []string{"test"}, Operator: "<", Value: 2}
+  predicate := Predicate{Path: common.DataPath{RealPath: []string{"test"}}, Operator: "<", Value: 2}
 
   if predicate.SatisfiedBy(item) {
     t.Log("> operator is broken")
@@ -91,7 +92,7 @@ func TestFilteringByLessThanOrEquals(t *testing.T) {
     "test": 1,
   })
 
-  predicate := Predicate{Path: []string{"test"}, Operator: "<=", Value: 1}
+  predicate := Predicate{Path: common.DataPath{RealPath: []string{"test"}}, Operator: "<=", Value: 1}
 
   if predicate.SatisfiedBy(item) {
     t.Log("> operator is broken")

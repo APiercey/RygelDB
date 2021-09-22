@@ -14,8 +14,8 @@ func (i *Item) MarkAsStale() {
 }
 
 func (i Item) PluckValueOnPath(dp common.DataPath) (interface{}, bool) {
-  steps := dp.RealPath[:len(dp.RealPath) - 1]
-  key := dp.RealPath[len(dp.RealPath) - 1]
+  steps := dp.Steps()
+  key := dp.Key()
 
   structure := i.Data
 

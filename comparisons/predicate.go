@@ -6,9 +6,9 @@ import (
 )
 
 type Predicate struct {
-	Path common.DataPath `json:"path"`
-	Operator string `json:"operator"`
-	Value interface{} `json:"value"`
+	Path common.DataPath 
+	Operator string 
+	Value interface{} 
 }
 
 func (wp Predicate) SatisfiedBy(item core.Item) bool {
