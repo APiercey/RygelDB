@@ -14,7 +14,7 @@ var storePersistenceService = services.StorePersistenceService{
   DiskLocation: "./store.db",
 }
 
-func ExecuteStatementAgainstStore(currentStore *core.Store, statement string) (result string, store_was_updated bool) {
+func ExecuteStatementAgainstStore(store *core.Store, statement string) (result string, store_was_updated bool) {
   command, err := commands.CommandParser(statement)
 
   if err != nil {
@@ -25,12 +25,12 @@ func ExecuteStatementAgainstStore(currentStore *core.Store, statement string) (r
     return "Command not valid", false
   }
 
-  result, s := command.Execute(currentStore)
+  result, s := command.Execute(store)
 
   return result, s
 }
 
-func buildConnectionHandler(currentStore *core.Store) func(conn net.Conn) {
+func buildConnectionHandler(store *core.Store) func(conn net.Conn) {
   return func(conn net.Conn) {
     for {
       buffer, err := bufio.NewReader(conn).ReadBytes('\n')
@@ -41,10 +41,10 @@ func buildConnectionHandler(currentStore *core.Store) func(conn net.Conn) {
         return
       }
 
-      result, store_was_updated := ExecuteStatementAgainstStore(currentStore, string(buffer[:len(buffer)-1]))
+      result, store_was_updated := ExecuteStatementAgainstStore(store, string(buffer[:len(buffer)-1]))
 
       if store_was_updated {
-        storePersistenceService.PersistDataToDisk(currentStore)
+        storePersistenceService.PersistDataToDisk(store)
       }
 
       conn.Write([]byte(result))

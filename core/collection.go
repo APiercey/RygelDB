@@ -3,7 +3,7 @@ package core
 type Collection struct {
   Name string
   Items []Item
-  indices map[string]Index
+  Indices map[string]Index
 }
 
 func (c *Collection) InsertItem(item Item) bool {
@@ -12,25 +12,22 @@ func (c *Collection) InsertItem(item Item) bool {
   return true
 }
 
-// TODO: Make this work with WHERE clause
-// func (c *Collection) RemoveItem(key string) bool {
-//   _, ok := c.Items[key];
+func (c *Collection) AddIndex(index Index) {
+  c.Indices[index.dataPath.SerializedPath()] = index
+}
 
-//   if ok {
-//     delete(c.Items, key);
-//     return true
-//   } else {
-//     return false
-//   }
-// }
+func (c Collection) IndexedPaths() []string {
+  keys := make([]string, 0, len(c.Indices))
 
-// func (c *Collection) AddIndex(index Index) {
-//   c.indices[index.path] = index
-// }
+  for k := range c.Indices {
+    keys = append(keys, k)
+  }
+
+  return keys
+}
 
 func BuildCollection(collectionName string) Collection {
   collection := Collection{Name: collectionName, Items: []Item{}}
-  // collection.AddIndex(BuildIndex("__primaryId"))
 
   return collection
 }

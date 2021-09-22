@@ -18,7 +18,9 @@ func (c FetchCommand) Execute(s *core.Store) (string, bool) {
 
   numFoundItems := 0
 
-  for _, item := range s.Collections[c.collectionName].Items {
+  collection := s.Collections[c.collectionName]
+
+  for _, item := range collection.Items {
     if numFoundItems == c.limit {
       break
     }

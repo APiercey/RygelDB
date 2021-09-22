@@ -5,17 +5,18 @@ import (
 )
 
 type Index struct {
-  serializedPath common.DataPath
+  dataPath common.DataPath
   referencedItems map[interface{}][]*Item
 }
 
 func (i *Index) indexItem(item *Item) {
-  // TODO: Make this value reference the real path
-  // value := item.Data[i.serializedPath]
+  value, present := item.PluckValueOnPath(i.dataPath)
 
-  // i.ensureReferencedValue(value)
+  if !present { return }
 
-  // i.referencedItems[value] = append(i.referencedItems[value], item)
+  i.ensureReferencedValue(value)
+
+  i.referencedItems[value] = append(i.referencedItems[value], item)
 }
 
 func (i *Index) ensureReferencedValue(value interface{}) {
@@ -30,11 +31,9 @@ func (i Index) containsValue(value interface{}) bool {
   return ok
 }
 
-
-
 func BuildIndex(path []string) Index {
   return Index{
-    serializedPath: common.DataPath{RealPath: path},
+    dataPath: common.DataPath{RealPath: path},
     referencedItems: map[interface{}][]*Item{},
   }
 }

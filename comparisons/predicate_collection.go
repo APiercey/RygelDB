@@ -26,6 +26,10 @@ func (pc *PredicateCollection) AddPredicate(predicate Predicate) {
 	pc.predicates = append(pc.predicates, predicate)
 }
 
+// func (pc PredicateCollection) OverLappingPaths(paths []string) {
+// 	pc.predicates = append(pc.predicates, predicate)
+// }
+
 func BuildPredicateCollection() PredicateCollection {
   return PredicateCollection{predicates: []Predicate{}}
 }

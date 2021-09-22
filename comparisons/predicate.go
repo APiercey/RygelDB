@@ -6,7 +6,7 @@ import (
 )
 
 type Predicate struct {
-	Path []string `json:"path"`
+	Path common.DataPath `json:"path"`
 	Operator string `json:"operator"`
 	Value interface{} `json:"value"`
 }
@@ -14,7 +14,7 @@ type Predicate struct {
 func (wp Predicate) SatisfiedBy(item core.Item) bool {
   if item.IsStale { return false }
 
-  value, presence := item.PluckValueOnPath(common.DataPath{RealPath: wp.Path})
+  value, presence := item.PluckValueOnPath(wp.Path)
 
   if !presence { return false }
 
@@ -47,8 +47,8 @@ func (wp Predicate) compare(value interface{}) bool {
 }
 
 func (wp Predicate) pluckValue(item core.Item) (interface{}, bool) {
-  steps := wp.Path[:len(wp.Path) - 1]
-  key := wp.Path[len(wp.Path) - 1]
+  steps := wp.Path.Steps()
+  key := wp.Path.Key()
 
   structure := item.Data
 
@@ -66,3 +66,4 @@ func (wp Predicate) pluckValue(item core.Item) (interface{}, bool) {
   value, presence := structure[key]
   return value, presence
 }
+
