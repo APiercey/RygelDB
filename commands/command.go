@@ -25,21 +25,6 @@ type CommandParameters struct {
 	Data map[string]interface{} `json:"data"`
 }
 
-func extractPredicateCollection(cmdParameters CommandParameters) comp.PredicateCollection {
-  predicates := comp.BuildPredicateCollection()
-
-	for _, wp := range cmdParameters.Predicates {
-		predicates.AddPredicate(comp.Predicate{
-			Path: common.DataPath{RealPath: wp.Path},
-			Operator: wp.Operator,
-			Value: wp.Value,
-		})
-  }
-
-  return predicates
-}
-
-
 func New(cmdData CommandParameters) (Command, error) {
 	switch cmdData.Operation {
 	case "DEFINE COLLECTION":
@@ -56,3 +41,19 @@ func New(cmdData CommandParameters) (Command, error) {
 		return nil, errors.New("Error, do not understand input")
 	}
 }
+
+func extractPredicateCollection(cmdParameters CommandParameters) comp.PredicateCollection {
+  predicates := comp.BuildPredicateCollection()
+
+	for _, wp := range cmdParameters.Predicates {
+		predicates.AddPredicate(comp.Predicate{
+			Path: common.DataPath{RealPath: wp.Path},
+			Operator: wp.Operator,
+			Value: wp.Value,
+		})
+  }
+
+  return predicates
+}
+
+
