@@ -4,12 +4,12 @@ import (
 	"example.com/rygel/core"
 )
 
-type InsertCommand struct {
+type insertCommand struct {
   collectionName string
   data map[string]interface{}
 }
 
-func (c InsertCommand) Execute(s *core.Store) (string, bool) {
+func (c insertCommand) Execute(s *core.Store) (string, bool) {
   item, err := core.BuildItem(c.data)
 
   if err != nil {
@@ -25,7 +25,7 @@ func (c InsertCommand) Execute(s *core.Store) (string, bool) {
   }
 }
 
-func (c InsertCommand) Valid() bool {
+func (c insertCommand) Valid() bool {
   if c.collectionName == "" {
     return false
   }

@@ -7,13 +7,13 @@ import (
 	comp "example.com/rygel/comparisons" 
 )
 
-type RemoveItemCommand struct {
+type removeItemCommand struct {
   collectionName string
   limit int
   predicates comp.PredicateCollection
 }
 
-func (c RemoveItemCommand) Execute(s *core.Store) (string, bool) {
+func (c removeItemCommand) Execute(s *core.Store) (string, bool) {
   numFoundItems := 0
 
   collection := s.Collections[c.collectionName]
@@ -36,7 +36,7 @@ func (c RemoveItemCommand) Execute(s *core.Store) (string, bool) {
   return "Removed " + strconv.Itoa(numFoundItems) + " items", false
 }
 
-func (c RemoveItemCommand) Valid() bool {
+func (c removeItemCommand) Valid() bool {
   if c.collectionName == "" {
     return false
   }

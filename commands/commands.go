@@ -1,8 +1,6 @@
 package commands
 
 import (
-	"errors"
-
 	"example.com/rygel/common"
 	"example.com/rygel/core"
 	comp "example.com/rygel/comparisons"
@@ -17,7 +15,7 @@ type CommandParameters struct {
 	Operation string `json:"operation"`
 	CollectionName  string `json:"collection_name"`
 	Limit int `json:"limit"`
-	Predicates []struct{
+	WhereClauses []struct{
 		Path []string `json:"path"`
 		Operator string `json:"operator"`
 		Value interface{} `json:"value"`
@@ -25,27 +23,27 @@ type CommandParameters struct {
 	Data map[string]interface{} `json:"data"`
 }
 
-func New(cmdData CommandParameters) (Command, error) {
-	switch cmdData.Operation {
+func New(cp CommandParameters) Command {
+	switch cp.Operation {
 	case "DEFINE COLLECTION":
-		return DefineCollectionCommand{collectionName: cmdData.CollectionName}, nil
+		return defineCollectionCommand{collectionName: cp.CollectionName}
 	case "REMOVE COLLECTION":
-		return RemoveCollectionCommand{collectionName: cmdData.CollectionName}, nil
+		return removeCollectionCommand{collectionName: cp.CollectionName}
 	case "REMOVE ITEMS":
-		return RemoveItemCommand{collectionName: cmdData.CollectionName, limit: cmdData.Limit, predicates: comp.BuildPredicateCollection()}, nil
+		return removeItemCommand{collectionName: cp.CollectionName, limit: cp.Limit, predicates: comp.BuildPredicateCollection()}
 	case "STORE":
-		return InsertCommand{collectionName: cmdData.CollectionName, data: cmdData.Data}, nil
+		return insertCommand{collectionName: cp.CollectionName, data: cp.Data}
 	case "FETCH":
-		return FetchCommand{collectionName: cmdData.CollectionName, limit: cmdData.Limit, predicates: extractPredicateCollection(cmdData)}, nil
+		return fetchCommand{collectionName: cp.CollectionName, limit: cp.Limit, predicates: extractPredicateCollection(cp)}
 	default:
-		return nil, errors.New("Error, do not understand input")
+		return noopErrorCommand{err: "Command was not understood. Nothing has been executed."}
 	}
 }
 
-func extractPredicateCollection(cmdParameters CommandParameters) comp.PredicateCollection {
+func extractPredicateCollection(cp CommandParameters) comp.PredicateCollection {
   predicates := comp.BuildPredicateCollection()
 
-	for _, wp := range cmdParameters.Predicates {
+	for _, wp := range cp.WhereClauses {
 		predicates.AddPredicate(comp.Predicate{
 			Path: common.DataPath{RealPath: wp.Path},
 			Operator: wp.Operator,

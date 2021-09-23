@@ -4,12 +4,12 @@ import (
   "example.com/rygel/core" 
 )
 
-type DefineIndexCommand struct {
+type defineIndexCommand struct {
   collectionName string
   path string
 }
 
-func (c DefineIndexCommand) Execute(s *core.Store) (string, bool) {
+func (c defineIndexCommand) Execute(s *core.Store) (string, bool) {
   // index := store.BuildIndex(c.path)
 
   // if s.AddIndex(c.collectionName, index) {
@@ -20,7 +20,7 @@ func (c DefineIndexCommand) Execute(s *core.Store) (string, bool) {
   return "TODO Implement", false
 }
 
-func (c DefineIndexCommand) Valid() bool {
+func (c defineIndexCommand) Valid() bool {
   // if c.collectionName == "" {
   //   return false
   // }

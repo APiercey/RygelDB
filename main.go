@@ -6,6 +6,7 @@ import (
 	"net"
   "example.com/rygel/core" 
   "example.com/rygel/commands" 
+  "example.com/rygel/input_parser" 
   "example.com/rygel/services" 
   "example.com/rygel/servers" 
 )
@@ -15,19 +16,14 @@ var storePersistenceService = services.StorePersistenceService{
 }
 
 func ExecuteStatementAgainstStore(store *core.Store, statement string) (result string, store_was_updated bool) {
-  command, err := commands.CommandParser(statement)
-
-  if err != nil {
-    return err.Error(), false
-  }
+  cmdParameters := input_parser.Parse(statement)
+  command := commands.New(cmdParameters)
 
   if !command.Valid() {
     return "Command not valid", false
   }
 
-  result, s := command.Execute(store)
-
-  return result, s
+  return command.Execute(store)
 }
 
 func buildConnectionHandler(store *core.Store) func(conn net.Conn) {

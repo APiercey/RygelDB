@@ -4,11 +4,11 @@ import (
   "example.com/rygel/core" 
 )
 
-type DefineCollectionCommand struct {
+type defineCollectionCommand struct {
   collectionName string
 }
 
-func (c DefineCollectionCommand) Execute(s *core.Store) (string, bool) {
+func (c defineCollectionCommand) Execute(s *core.Store) (string, bool) {
   if s.CreateCollection(c.collectionName) {
     return "OK", true
   } else {
@@ -16,7 +16,7 @@ func (c DefineCollectionCommand) Execute(s *core.Store) (string, bool) {
   }
 }
 
-func (c DefineCollectionCommand) Valid() bool {
+func (c defineCollectionCommand) Valid() bool {
   if c.collectionName == "" {
     return false
   }

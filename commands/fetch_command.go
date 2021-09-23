@@ -7,13 +7,13 @@ import (
 	comp "example.com/rygel/comparisons"
 )
 
-type FetchCommand struct {
+type fetchCommand struct {
   limit int
   collectionName string
   predicates comp.PredicateCollection
 }
 
-func (c FetchCommand) Execute(s *core.Store) (string, bool) {
+func (c fetchCommand) Execute(s *core.Store) (string, bool) {
   items := []map[string]interface{}{}
 
   numFoundItems := 0
@@ -38,7 +38,7 @@ func (c FetchCommand) Execute(s *core.Store) (string, bool) {
   return string(out), false
 }
 
-func (c FetchCommand) Valid() bool {
+func (c fetchCommand) Valid() bool {
   if c.collectionName == "" {
     return false
   }
