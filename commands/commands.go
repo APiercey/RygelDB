@@ -53,5 +53,3 @@ func extractPredicateCollection(cp CommandParameters) comp.PredicateCollection {
 
   return predicates
 }
-
-
