@@ -9,6 +9,10 @@ type DataPath struct {
   RealPath []string 
 }
 
+func (dp DataPath) Equals(other DataPath) bool {
+  return dp.SerializedPath() == other.SerializedPath()
+}
+
 func (dp DataPath) SerializedPath() string {
   return strings.Join(dp.RealPath[:],",")
 }

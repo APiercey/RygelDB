@@ -5,12 +5,12 @@ import (
 )
 
 type Index struct {
-  dataPath common.DataPath
+  DataPath common.DataPath
   referencedItems map[interface{}][]*Item
 }
 
 func (i *Index) indexItem(item *Item) {
-  value, present := item.PluckValueOnPath(i.dataPath)
+  value, present := item.PluckValueOnPath(i.DataPath)
 
   if !present { return }
 
@@ -20,20 +20,30 @@ func (i *Index) indexItem(item *Item) {
 }
 
 func (i *Index) ensureReferencedValue(value interface{}) {
-  if !i.containsValue(value) {
+  if !i.ContainsValue(value) {
     i.referencedItems[value] = []*Item{}
   }
 }
 
-func (i Index) containsValue(value interface{}) bool {
+func (i Index) ContainsValue(value interface{}) bool {
   _, ok := i.referencedItems[value]
 
   return ok
 }
 
+func (i Index) CopiedItems(value interface{}) []Item {
+  items := []Item{}
+
+  for _, item := range i.referencedItems[value] {
+    items = append(items, *item)
+  }
+
+  return items
+}
+
 func BuildIndex(path []string) Index {
   return Index{
-    dataPath: common.DataPath{RealPath: path},
+    DataPath: common.DataPath{RealPath: path},
     referencedItems: map[interface{}][]*Item{},
   }
 }

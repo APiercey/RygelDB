@@ -7,10 +7,22 @@ import (
 	comp "example.com/rygel/comparisons" 
 )
 
+
 type removeItemCommand struct {
   collectionName string
   limit int
   predicates comp.PredicateCollection
+}
+
+func (c removeItemCommand) candidateItems(s *core.Store) []core.Item {
+  collection := s.Collections[c.collectionName]
+  candidateItems := c.predicates.IndexedItems(collection)
+
+  if len(candidateItems) > 0 {
+    return candidateItems
+  } 
+
+  return collection.Items
 }
 
 func (c removeItemCommand) Execute(s *core.Store) (string, bool) {

@@ -2,9 +2,8 @@ package commands
 
 import (
 	"encoding/json"
-
-	"example.com/rygel/core"
 	comp "example.com/rygel/comparisons"
+	"example.com/rygel/core"
 )
 
 type fetchCommand struct {
@@ -13,25 +12,31 @@ type fetchCommand struct {
   predicates comp.PredicateCollection
 }
 
-func (c fetchCommand) Execute(s *core.Store) (string, bool) {
-  items := []map[string]interface{}{}
-
-  numFoundItems := 0
-
+func (c fetchCommand) candidateItems(s *core.Store) []core.Item {
   collection := s.Collections[c.collectionName]
+  candidateItems := c.predicates.IndexedItems(collection)
 
-  for _, item := range collection.Items {
-    if numFoundItems == c.limit {
+  if len(candidateItems) > 0 {
+    return candidateItems
+  } 
+
+  return collection.Items
+}
+
+func (c fetchCommand) Execute(s *core.Store) (string, bool) {
+  matchingDataOfItems := []map[string]interface{}{}
+
+  for _, item := range c.candidateItems(s) {
+    if len(matchingDataOfItems) == c.limit {
       break
     }
 
     if c.predicates.SatisfiedBy(item) {
-      items = append(items, item.Data)
-      numFoundItems += 1
+      matchingDataOfItems = append(matchingDataOfItems, item.Data)
     }
   }
 
-  out, err := json.Marshal(items)
+  out, err := json.Marshal(matchingDataOfItems)
 
   if err != nil { panic (err) }
 

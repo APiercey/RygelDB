@@ -11,6 +11,14 @@ type Predicate struct {
 	Value interface{} 
 }
 
+func (p Predicate) IndexedItems(index core.Index) []core.Item {
+  if index.ContainsValue(p.Value) {
+    return index.CopiedItems(p.Value)
+  } else {
+    return []core.Item{}
+  }
+}
+
 func (wp Predicate) SatisfiedBy(item core.Item) bool {
   if item.IsStale { return false }
 

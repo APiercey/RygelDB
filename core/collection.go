@@ -13,7 +13,7 @@ func (c *Collection) InsertItem(item Item) bool {
 }
 
 func (c *Collection) AddIndex(index Index) {
-  c.Indices[index.dataPath.SerializedPath()] = index
+  c.Indices[index.DataPath.SerializedPath()] = index
 }
 
 func (c Collection) IndexedPaths() []string {
