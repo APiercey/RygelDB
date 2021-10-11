@@ -2,11 +2,11 @@ package input_parser
 
 import (
 	"encoding/json"
-	"example.com/rygel/commands"
+	cp "example.com/rygel/command_parameters"
 )
 
-func Parse(input string) commands.CommandParameters {
-	cmdParameters := commands.NewCommandParameters()
+func Parse(input string) cp.CommandParameters {
+	cmdParameters := cp.New()
 
 	err := json.Unmarshal([]byte(input), &cmdParameters)
 

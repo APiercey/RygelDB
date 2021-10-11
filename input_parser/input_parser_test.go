@@ -8,13 +8,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestParsingDefaultValues(t *testing.T) {
-  var result = Parse(`{}`);
-
-  assert.Equal(t, result.Limit, -1)
-  assert.Equal(t, result.Error, "")
-}
-
 func TestParsingOperation(t *testing.T) {
   var result = Parse(`{
     "operation": "DEFINE COLLECTION"

@@ -3,6 +3,7 @@ package commands
 import (
 	"example.com/rygel/common"
 	"example.com/rygel/core"
+	cp "example.com/rygel/command_parameters"
 	comp "example.com/rygel/comparisons"
 )
 
@@ -11,27 +12,31 @@ type Command interface {
   Valid() bool
 }
 
-func New(cp CommandParameters) Command {
-	switch cp.Operation {
+func New(params cp.CommandParameters) Command {
+	// if cp.Error != nil {
+
+	// }
+
+	switch params.Operation {
 	case "DEFINE COLLECTION":
-		return defineCollectionCommand{collectionName: cp.CollectionName}
+		return defineCollectionCommand{collectionName: params.CollectionName}
 	case "REMOVE COLLECTION":
-		return removeCollectionCommand{collectionName: cp.CollectionName}
+		return removeCollectionCommand{collectionName: params.CollectionName}
 	case "REMOVE ITEMS":
-		return removeItemCommand{collectionName: cp.CollectionName, limit: cp.Limit, predicates: comp.BuildPredicateCollection()}
+		return removeItemCommand{collectionName: params.CollectionName, limit: params.Limit, predicates: comp.BuildPredicateCollection()}
 	case "STORE":
-		return insertCommand{collectionName: cp.CollectionName, data: cp.Data}
+		return insertCommand{collectionName: params.CollectionName, data: params.Data}
 	case "FETCH":
-		return fetchCommand{collectionName: cp.CollectionName, limit: cp.Limit, predicates: extractPredicateCollection(cp)}
+		return fetchCommand{collectionName: params.CollectionName, limit: params.Limit, predicates: extractPredicateCollection(params)}
 	default:
 		return noopErrorCommand{err: "Command was not understood. Nothing has been executed."}
 	}
 }
 
-func extractPredicateCollection(cp CommandParameters) comp.PredicateCollection {
+func extractPredicateCollection(params cp.CommandParameters) comp.PredicateCollection {
   predicates := comp.BuildPredicateCollection()
 
-	for _, wp := range cp.WhereClauses {
+	for _, wp := range params.WhereClauses {
 		predicates.AddPredicate(comp.Predicate{
 			Path: common.DataPath{RealPath: wp.Path},
 			Operator: wp.Operator,

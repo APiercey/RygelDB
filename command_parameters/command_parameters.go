@@ -1,4 +1,10 @@
-package commands
+package command_parameters
+
+type WhereClause struct {
+	Path []string `json:"path"`
+	Operator string `json:"operator"`
+	Value interface{} `json:"value"`
+}
 
 type CommandParameters struct {
 	Operation string `json:"operation"`
@@ -10,10 +16,16 @@ type CommandParameters struct {
 		Value interface{} `json:"value"`
 	} `json:"where"`
 	Data map[string]interface{} `json:"data"`
+	Error string
 }
 
-func NewCommandParameters() CommandParameters {
+func (cp CommandParameters) HasError() bool {
+	return cp.Error != ""
+}
+
+func New() CommandParameters {
 	return CommandParameters{
 		Limit: -1,
+		Error: "",
 	}
 }
