@@ -2,7 +2,6 @@ package command_parameters
 
 import (
 	"testing"
-
 	"github.com/stretchr/testify/assert"
 )
 

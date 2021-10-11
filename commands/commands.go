@@ -12,10 +12,25 @@ type Command interface {
   Valid() bool
 }
 
-func New(params cp.CommandParameters) Command {
-	// if cp.Error != nil {
+// TODO: Should this be a part of the CommandParameters struct?
+func extractPredicateCollection(params cp.CommandParameters) comp.PredicateCollection {
+  predicates := comp.BuildPredicateCollection()
 
-	// }
+	for _, wp := range params.WhereClauses {
+		predicates.AddPredicate(comp.Predicate{
+			Path: common.DataPath{RealPath: wp.Path},
+			Operator: wp.Operator,
+			Value: wp.Value,
+		})
+  }
+
+  return predicates
+}
+
+func New(params cp.CommandParameters) Command {
+	if params.Error != "" {
+		return noopErrorCommand{err: params.Error}
+	}
 
 	switch params.Operation {
 	case "DEFINE COLLECTION":
@@ -33,16 +48,3 @@ func New(params cp.CommandParameters) Command {
 	}
 }
 
-func extractPredicateCollection(params cp.CommandParameters) comp.PredicateCollection {
-  predicates := comp.BuildPredicateCollection()
-
-	for _, wp := range params.WhereClauses {
-		predicates.AddPredicate(comp.Predicate{
-			Path: common.DataPath{RealPath: wp.Path},
-			Operator: wp.Operator,
-			Value: wp.Value,
-		})
-  }
-
-  return predicates
-}
