@@ -1,11 +1,5 @@
 package command_parameters
 
-type WhereClause struct {
-	Path []string `json:"path"`
-	Operator string `json:"operator"`
-	Value interface{} `json:"value"`
-}
-
 type CommandParameters struct {
 	Operation string `json:"operation"`
 	CollectionName  string `json:"collection_name"`
