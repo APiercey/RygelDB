@@ -8,7 +8,11 @@ import (
 func Parse(input string) commands.CommandParameters {
 	cmdParameters := commands.NewCommandParameters()
 
-  json.Unmarshal([]byte(input), &cmdParameters)
+	err := json.Unmarshal([]byte(input), &cmdParameters)
+
+	if err != nil {
+		cmdParameters.Error = err.Error()
+	}
 
 	return cmdParameters
 }
