@@ -6,11 +6,6 @@ import (
 
 type Item struct {
   Data map[string]interface{}
-  IsStale bool
-}
-
-func (i *Item) MarkAsStale() {
-  i.IsStale = true
 }
 
 func (i *Item) SetData(newData map[string]interface{}) {
@@ -40,5 +35,5 @@ func (i Item) PluckValueOnPath(dp common.DataPath) (interface{}, bool) {
 }
 
 func BuildItem(data map[string]interface{}) (Item, error) {
-  return Item{Data: data, IsStale: false}, nil
+  return Item{Data: data}, nil
 }

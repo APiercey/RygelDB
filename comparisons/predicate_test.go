@@ -59,21 +59,6 @@ func TestFilteringByGreaterThanOrEquals(t *testing.T) {
   }
 }
 
-func TestFilteringStaleItems(t *testing.T) {
-  item, _ := core.BuildItem(map[string]interface{}{
-    "Birds of Paradise": 1,
-  })
-
-  item.MarkAsStale()
-
-  predicate := Predicate{Path: common.DataPath{RealPath: []string{"test"}}, Operator: "=", Value: 1}
-
-  if predicate.SatisfiedBy(item) {
-    t.Log("Does not filter ignore stale items")
-    t.Fail()
-  }
-}
-
 func TestFilteringByLessThan(t *testing.T) {
   item, _ := core.BuildItem(map[string]interface{}{
     "test": 1,

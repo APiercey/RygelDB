@@ -31,10 +31,6 @@ func (c fetchCommand) Execute(s *core.Store) (string, bool) {
       break
     }
 
-    if item.IsStale {
-      continue
-    }
-
     if c.predicates.SatisfiedBy(item) {
       matchingDataOfItems = append(matchingDataOfItems, item.Data)
     }

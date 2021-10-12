@@ -7,7 +7,6 @@ import (
 	comp "example.com/rygel/comparisons" 
 )
 
-
 type removeItemCommand struct {
   collectionName string
   limit int
