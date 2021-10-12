@@ -1,7 +1,6 @@
 package common
 
 import (
-	"fmt"
 	"strings"
 )
 
@@ -22,6 +21,5 @@ func (dp DataPath) Steps() []string {
 }
 
 func (dp DataPath) Key() string {
-  fmt.Println(dp)
   return dp.RealPath[len(dp.RealPath) - 1] 
 }

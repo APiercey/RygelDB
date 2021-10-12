@@ -41,6 +41,8 @@ func New(params cp.CommandParameters) Command {
 		return removeItemCommand{collectionName: params.CollectionName, limit: params.Limit, predicates: comp.BuildPredicateCollection()}
 	case "STORE":
 		return insertCommand{collectionName: params.CollectionName, data: params.Data}
+	case "UPDATE ITEM":
+		return updateItemCommand{collectionName: params.CollectionName, limit: params.Limit, predicates: comp.BuildPredicateCollection(), data: params.Data}
 	case "FETCH":
 		return fetchCommand{collectionName: params.CollectionName, limit: params.Limit, predicates: extractPredicateCollection(params)}
 	default:

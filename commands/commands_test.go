@@ -47,6 +47,14 @@ func TestReturnsFetch(t *testing.T) {
   assert.IsType(t, fetchCommand{}, cmd)
 }
 
+func TestReturnsUpdate(t *testing.T) {
+	params := cp.New()
+	params.Operation = "UPDATE ITEM"
+	cmd := New(params)
+
+  assert.IsType(t, updateItemCommand{}, cmd)
+}
+
 func TestReturnsNoopError(t *testing.T) {
 	params := cp.New()
 	params.Operation = "DOES NOT EXIST"

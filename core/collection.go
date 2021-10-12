@@ -12,6 +12,10 @@ func (c *Collection) InsertItem(item Item) bool {
   return true
 }
 
+func (c *Collection) ReplaceItems(items []Item) {
+  c.Items = items
+}
+
 func (c *Collection) AddIndex(index Index) {
   c.Indices[index.DataPath.SerializedPath()] = index
 }

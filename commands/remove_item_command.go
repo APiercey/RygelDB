@@ -14,35 +14,29 @@ type removeItemCommand struct {
   predicates comp.PredicateCollection
 }
 
-func (c removeItemCommand) candidateItems(s *core.Store) []core.Item {
-  collection := s.Collections[c.collectionName]
-  candidateItems := c.predicates.IndexedItems(collection)
-
-  if len(candidateItems) > 0 {
-    return candidateItems
-  } 
-
-  return collection.Items
-}
-
 func (c removeItemCommand) Execute(s *core.Store) (string, bool) {
   numFoundItems := 0
 
-  collection := s.Collections[c.collectionName]
-  items := collection.Items
+  keptItems := []core.Item{}
+  for _, item := range s.Collections[c.collectionName].Items {
+    keep := true
 
-  for _, item := range items {
     if numFoundItems == c.limit {
-      break
+      keep = false
     }
 
-    if c.predicates.SatisfiedBy(item) {
-      item.MarkAsStale()
+    if !c.predicates.SatisfiedBy(item) {
+      keep = false
+    }
+
+    if keep {
+      keptItems = append(keptItems, item)
       numFoundItems += 1
     }
   }
 
-  collection.Items = items
+  collection := s.Collections[c.collectionName]
+  collection.ReplaceItems(keptItems)
   s.Collections[c.collectionName] = collection
 
   return "Removed " + strconv.Itoa(numFoundItems) + " items", false

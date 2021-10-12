@@ -2,6 +2,7 @@ package main
 
 import (
 	"testing"
+
 	"example.com/rygel/core"
 )
 
@@ -84,59 +85,37 @@ func TestRemoveSingleItem(t *testing.T) {
   if result != "Removed 1 items" { t.Error("Command does not work", result) }
 }
 
-// func TestRemoveItemsSingleWhereClause(t *testing.T) {
-//   testStore := setupStore()
+func TestRemovedItemsNotRetreivable(t *testing.T) {
+  testStore := setupStore()
+  expected := `[{"foo":"bar"}]`
 
-//   ExecuteStatementAgainstStore(&testStore, `{
-//     "operation": "DEFINE COLLECTION",
-//     "collection_name": "test_collection"
-//   }`)
-//   ExecuteStatementAgainstStore(&testStore, `{ 
-//     "operation": "STORE",
-//     "collection_name": "test_collection",
-//     "data": {"foo": "bar"}
-//   }`)
-//   ExecuteStatementAgainstStore(&testStore, `{ 
-//     "operation": "STORE",
-//     "collection_name": "test_collection",
-//     "data": {"foo": "bar", "key": "test_item"}
-//   }`)
-//   result, _ := ExecuteStatementAgainstStore(&testStore, "REMOVE 1 ITEM FROM test_collection WHERE foo IS bar")
-//   result, _ := ExecuteStatementAgainstStore(&testStore, `{ 
-//     "operation": "REMOVE ITEMS",
-//     "collection_name": "test_collection",
-//     "limit": 1,
-//     "where": []
-//   }`)
+  ExecuteStatementAgainstStore(&testStore, `{
+    "operation": "DEFINE COLLECTION",
+    "collection_name": "test_collection"
+  }`)
+  ExecuteStatementAgainstStore(&testStore, `{ 
+    "operation": "STORE",
+    "collection_name": "test_collection",
+    "data": {"foo": "bar"}
+  }`)
+  ExecuteStatementAgainstStore(&testStore, `{ 
+    "operation": "REMOVE ITEMS",
+    "collection_name": "test_collection",
+    "limit": 1
+  }`)
+  result, _ := ExecuteStatementAgainstStore(&testStore, `{ 
+    "operation": "FETCH",
+    "collection_name": "test_collection",
+    "limit": 1
+  }`)
 
-//   if result != "Removed 1 items" { t.Error("Command does not work", result) }
-// }
+  if result != expected {
+    t.Log("Expected: ", expected)
+    t.Log("Received: ", result)
+    t.Fail()
+  }
+}
 
-// func TestRemoveAllItemsWhereClause(t *testing.T) {
-//   testStore := setupStore()
-
-//   ExecuteStatementAgainstStore(&testStore, `DEFINE COLLECTION test_collection`)
-//   ExecuteStatementAgainstStore(&testStore, `STORE INTO test_collection {"foo":"bar"}`)
-//   ExecuteStatementAgainstStore(&testStore, `STORE INTO test_collection {"key":"test_item","foo":"bar"}`)
-//   result, _ := ExecuteStatementAgainstStore(&testStore, "REMOVE all ITEM FROM test_collection WHERE foo IS bar")
-
-//   if result != "Removed 2 items" { t.Error("Command does not work", result) }
-// }
-
-// func TestFetchItemsSingleWhereClause(t *testing.T) {
-//   testStore := setupStore()
-//   expected := `[{"foo":"bar","key":"test_item"}]`
-
-//   ExecuteStatementAgainstStore(&testStore, `DEFINE COLLECTION test_collection`)
-//   ExecuteStatementAgainstStore(&testStore, `STORE INTO test_collection {"key":"test_item","foo":"bar"}`)
-//   result, _ := ExecuteStatementAgainstStore(&testStore, "FETCH 1 FROM test_collection WHERE foo IS bar")
-
-//   if result != expected {
-//     t.Log("Expected: ", expected)
-//     t.Log("Received: ", result)
-//     t.Fail()
-//   }
-// }
 func TestFetchSingleItem(t *testing.T) {
   testStore := setupStore()
   expected := `[{"foo":"bar"}]`
@@ -275,18 +254,39 @@ func TestFetchItemsMultipleWhereClause(t *testing.T) {
   }
 }
 
-// func TestFetchAllItems(t *testing.T) {
-//   testStore := setupStore()
-//   expected := `[{"foo":"bar","key":"test_item_one"},{"foo":"bar","key":"test_item_two"}]`
+func TestUpdateItem(t *testing.T) {
+  testStore := setupStore()
 
-//   ExecuteStatementAgainstStore(&testStore, `DEFINE COLLECTION test_collection`)
-//   ExecuteStatementAgainstStore(&testStore, `STORE INTO test_collection {"key":"test_item_one","foo":"bar"}`)
-//   ExecuteStatementAgainstStore(&testStore, `STORE INTO test_collection {"key":"test_item_two","foo":"bar"}`)
-//   result, _ := ExecuteStatementAgainstStore(&testStore, "FETCH all FROM test_collection WHERE foo IS bar")
+  ExecuteStatementAgainstStore(&testStore, `{
+    "operation": "DEFINE COLLECTION",
+    "collection_name": "test_collection"
+  }`)
+  ExecuteStatementAgainstStore(&testStore, `{ 
+    "operation": "STORE",
+    "collection_name": "test_collection",
+    "data": {"foo": "bar"}
+  }`)
+  updateResult, _ := ExecuteStatementAgainstStore(&testStore, `{ 
+    "operation": "UPDATE ITEM",
+    "collection_name": "test_collection",
+    "data": {"foo": "new value"}
+  }`)
 
-//   if result != expected {
-//     t.Log("Expected: ", expected)
-//     t.Log("Received: ", result)
-//     t.Fail()
-//   }
-// }
+  if updateResult != "Updated 1 items" { t.Error("Command does not work", updateResult) }
+
+  fetchResult, _ := ExecuteStatementAgainstStore(&testStore, `{ 
+    "operation": "FETCH",
+    "collection_name": "test_collection",
+    "limit": 1,
+    "where": [
+      { "path": ["foo"], "operator": "=", "value": "new value" }
+    ]
+  }`)
+
+  expected := `[{"foo":"new value"}]`
+  if fetchResult != expected {
+    t.Log("Expected: ", expected)
+    t.Log("Received: ", fetchResult)
+    t.Fail()
+  }
+}

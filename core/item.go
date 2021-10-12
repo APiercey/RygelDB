@@ -13,6 +13,10 @@ func (i *Item) MarkAsStale() {
   i.IsStale = true
 }
 
+func (i *Item) SetData(newData map[string]interface{}) {
+  i.Data = newData
+}
+
 func (i Item) PluckValueOnPath(dp common.DataPath) (interface{}, bool) {
   steps := dp.Steps()
   key := dp.Key()
