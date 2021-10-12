@@ -8,7 +8,7 @@ import (
 )
 
 func TestFilteringByEquals(t *testing.T) {
-  item, _ := core.BuildItem(map[string]interface{}{
+  item, _ := core.BuildItem(common.Data{
     "test": 1,
   })
 
@@ -21,7 +21,7 @@ func TestFilteringByEquals(t *testing.T) {
 }
 
 func TestFilteringByNotEquals(t *testing.T) {
-  item, _ := core.BuildItem(map[string]interface{}{
+  item, _ := core.BuildItem(common.Data{
     "test": 1,
   })
 
@@ -34,7 +34,7 @@ func TestFilteringByNotEquals(t *testing.T) {
 }
 
 func TestFilteringByGreaterThan(t *testing.T) {
-  item, _ := core.BuildItem(map[string]interface{}{
+  item, _ := core.BuildItem(common.Data{
     "test": 1,
   })
 
@@ -47,7 +47,7 @@ func TestFilteringByGreaterThan(t *testing.T) {
 }
 
 func TestFilteringByGreaterThanOrEquals(t *testing.T) {
-  item, _ := core.BuildItem(map[string]interface{}{
+  item, _ := core.BuildItem(common.Data{
     "test": 1,
   })
 
@@ -60,7 +60,7 @@ func TestFilteringByGreaterThanOrEquals(t *testing.T) {
 }
 
 func TestFilteringByLessThan(t *testing.T) {
-  item, _ := core.BuildItem(map[string]interface{}{
+  item, _ := core.BuildItem(common.Data{
     "test": 1,
   })
 
@@ -73,7 +73,7 @@ func TestFilteringByLessThan(t *testing.T) {
 }
 
 func TestFilteringByLessThanOrEquals(t *testing.T) {
-  item, _ := core.BuildItem(map[string]interface{}{
+  item, _ := core.BuildItem(common.Data{
     "test": 1,
   })
 

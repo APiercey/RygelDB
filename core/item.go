@@ -5,10 +5,10 @@ import (
 )
 
 type Item struct {
-  Data map[string]interface{}
+  Data common.Data
 }
 
-func (i *Item) SetData(newData map[string]interface{}) {
+func (i *Item) SetData(newData common.Data) {
   i.Data = newData
 }
 
@@ -34,6 +34,6 @@ func (i Item) PluckValueOnPath(dp common.DataPath) (interface{}, bool) {
   return value, presence
 }
 
-func BuildItem(data map[string]interface{}) (Item, error) {
+func BuildItem(data common.Data) (Item, error) {
   return Item{Data: data}, nil
 }

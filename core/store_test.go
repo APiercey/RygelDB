@@ -2,6 +2,7 @@ package core
 
 import (
 	"testing"
+	"example.com/rygel/common"
 )
 
 func TestCreateCollection(t *testing.T) {
@@ -22,7 +23,7 @@ func TestStoreInsertItem(t *testing.T) {
   store := BuildStore()
   store.CreateCollection("flowers")
 
-  item, _ := BuildItem(map[string]interface{}{
+  item, _ := BuildItem(common.Data{
     "Birds of Paradise": 1,
     "Dasies": 2,
   })

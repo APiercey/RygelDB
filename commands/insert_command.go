@@ -2,11 +2,12 @@ package commands
 
 import (
 	"example.com/rygel/core"
+	"example.com/rygel/common"
 )
 
 type insertCommand struct {
   collectionName string
-  data map[string]interface{}
+  data common.Data
 }
 
 func (c insertCommand) Execute(s *core.Store) (string, bool) {

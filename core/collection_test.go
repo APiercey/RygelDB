@@ -2,12 +2,13 @@ package core
 
 import (
 	"testing"
+	"example.com/rygel/common"
 )
 
 func TestCollectionInsertItem(t *testing.T) {
   collection := BuildCollection("flowers")
 
-  item, _ := BuildItem(map[string]interface{}{
+  item, _ := BuildItem(common.Data{
     "Birds of Paradise": 1,
     "Dasies": 2,
   })

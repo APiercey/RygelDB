@@ -5,13 +5,14 @@ import (
 
 	comp "example.com/rygel/comparisons"
 	"example.com/rygel/core"
+	"example.com/rygel/common"
 )
 
 type updateItemCommand struct {
   collectionName string
   limit int
   predicates comp.PredicateCollection
-  data map[string]interface{}
+  data common.Data
 }
 
 func (c updateItemCommand) Execute(s *core.Store) (string, bool) {
