@@ -47,24 +47,24 @@ Removes a collection from the datbase. This removes all stored JSON document ite
 
 #### Storing Data
 ```json
-  { 
-    "operation": "STORE",
-    "collection_name": "collection_name",
-    "data": {"data": "structure of document"}
-  }
+{ 
+  "operation": "STORE",
+  "collection_name": "collection_name",
+  "data": {"data": "structure of document"}
+}
 ```
 Stores a document item in a collection. Data can be any valid JSON structure.
 
 #### Querying data
 ```json
 { 
-    "operation": "FETCH",
-    "collection_name": "collection_name",
-    "limit": 1,
-    "where": [
-      { "path": ["foo"], "operator": "=", "value": "new value" }
-    ]
-  }
+  "operation": "FETCH",
+  "collection_name": "collection_name",
+  "limit": 1,
+  "where": [
+    { "path": ["foo"], "operator": "=", "value": "new value" }
+  ]
+}
 ```
 Queries for data in a collection. The `limit` parameter is optional and if provided, will stop looking for items after it has reached it's limit.
 
@@ -75,93 +75,93 @@ Rygel can query for data based on certain criteria, named where predicates. Each
 
 Given the following data:
 ```javascript
-  {
-    "operation": "DEFINE COLLECTION",
-    "collection_name": "fruits"
-  }
-  { 
-    "operation": "STORE",
-    "collection_name": "fruits",
-    "data": {"key":"apple","color":"red"}
-  }
-  { 
-    "operation": "STORE",
-    "collection_name": "fruits",
-    "data": {"key":"orange","color":"orange"}
-  }
+{
+  "operation": "DEFINE COLLECTION",
+  "collection_name": "fruits"
+}
+{ 
+  "operation": "STORE",
+  "collection_name": "fruits",
+  "data": {"key":"apple","color":"red"}
+}
+{ 
+  "operation": "STORE",
+  "collection_name": "fruits",
+  "data": {"key":"orange","color":"orange"}
+}
 ```
 
 Querying for a single document would look like:
 ```javascript
-  { 
-    "operation": "FETCH",
-    "collection_name": "fruits",
-    "limit": 1
-  }
+{ 
+  "operation": "FETCH",
+  "collection_name": "fruits",
+  "limit": 1
+}
 ```
 > [{"color":"orange","key":"orange"}]
 
 Querying for all documents that meet a criteria:
 ```javascript
-  { 
-    "operation": "FETCH",
-    "collection_name": "fruits",
-    "where": [
-      { "path": ["color"], "operator": "=", "value": "red" },
-    ]
-  }
+{ 
+  "operation": "FETCH",
+  "collection_name": "fruits",
+  "where": [
+    { "path": ["color"], "operator": "=", "value": "red" },
+  ]
+}
 ```
 > [{"color":"red","key":"apple"}]
 
 It's possible to query based on deep properties and multiple WHERE clauses:
 ```javascript
-  { 
-    "operation": "STORE",
-    "collection_name": "fruits",
-    "data": {
-      "key": "dragonfruit",
-      "color": "red",
-      "properties": {
-        "spikes": "many",
-        "internal_color": "white"
-      }
+{ 
+  "operation": "STORE",
+  "collection_name": "fruits",
+  "data": {
+    "key": "dragonfruit",
+    "color": "red",
+    "properties": {
+      "spikes": "many",
+      "internal_color": "white"
     }
   }
-  { 
-    "operation": "FETCH",
-    "collection_name": "fruits",
-    "where": [
-      { "path": ["color"], "operator": "=", "value": "red" },
-      { "path": ["properties", "internal_color"], "operator": "=", "value": "white" },
-    ]
-  }
+}
+{ 
+  "operation": "FETCH",
+  "collection_name": "fruits",
+  "where": [
+    { "path": ["color"], "operator": "=", "value": "red" },
+    { "path": ["properties", "internal_color"], "operator": "=", "value": "white" },
+  ]
+}
 ```
 > [{"color":"red","key":"dragonfruit","properties":{"internal_color":"white","spikes":"many"}}]
 
 #### Remove data
 ```javascript
-  { 
-    "operation": "REMOVE ITEMS",
-    "collection_name": "test_collection",
-    "limit": 1,
-    "where": [
-      { "path": ["amount"], "operator": ">", "value": 1000 },
-    ]
-  }
+{ 
+  "operation": "REMOVE ITEMS",
+  "collection_name": "test_collection",
+  "limit": 1,
+  "where": [
+    { "path": ["amount"], "operator": ">", "value": 1000 },
+  ]
+}
 ```
 Removes JSON document items from a collection. Limit is optional.
 
 #### Update data
 ```javascript
-  { 
-    "operation": "UPDATE ITEM",
-    "collection_name": "test_collection",
-    "limit": 1,
-    "where": [
-      { "path": ["foo"], "operator": "=", "value": "bar" },
-    ],
-    "data": {"foo": "YOTZ!"}
-  }
+{ 
+  "operation": "UPDATE ITEM",
+  "collection_name": "test_collection",
+  "limit": 1,
+  "where": [
+    { "path": ["foo"], "operator": "=", "value": "bar" },
+  ],
+  "data": {"foo": "YOTZ!"}
+}
 ```
 
 Updates JSON items in a collection. Works with where predicates and limit is optional.
