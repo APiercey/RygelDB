@@ -152,7 +152,7 @@ It's possible to query based on deep properties and multiple WHERE clauses:
 Removes JSON document items from a collection. Limit is optional.
 
 #### Update data
-```javascript
+```json
 { 
   "operation": "UPDATE ITEM",
   "collection_name": "test_collection",
