@@ -38,7 +38,7 @@ echo '{ "operation": "DEFINE COLLECTION", "collection_name": "test_collection" }
 ```
 
 ## Defining Collections
-```json
+```javascript
 { 
   "operation": "DEFINE COLLECTION",
   "collection_name": "collection_name"
@@ -47,7 +47,7 @@ echo '{ "operation": "DEFINE COLLECTION", "collection_name": "test_collection" }
 Creates a new collection where document items may be stored.
 
 ## Removing Collections
-```json
+```javascript
 { 
   "operation": "REMOVE COLLECTION",
   "collection_name": "collection_name"
@@ -56,7 +56,7 @@ Creates a new collection where document items may be stored.
 Removes a collection from the datbase. This removes all stored JSON document items within it.
 
 ## Storing Data
-```json
+```javascript
 { 
   "operation": "STORE",
   "collection_name": "collection_name",
@@ -66,7 +66,7 @@ Removes a collection from the datbase. This removes all stored JSON document ite
 Stores a document item in a collection. Data can be any valid JSON structure.
 
 ## Querying data
-```json
+```javascript
 { 
   "operation": "FETCH",
   "collection_name": "collection_name",
@@ -162,7 +162,7 @@ It's possible to query based on deep properties and multiple WHERE clauses:
 Removes JSON document items from a collection. Limit is optional.
 
 ## Update data
-```json
+```javascript
 { 
   "operation": "UPDATE ITEM",
   "collection_name": "test_collection",
