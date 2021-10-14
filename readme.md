@@ -6,14 +6,14 @@
 > What the Yotz?! - Dominar Rygel the XVI
 
 - [Usage](#usage)
-  * [Storing and Querying Data](#storing-and-querying-data)
-  * [Defining Collections](#defining-collections)
-  * [Removing Collections](#removing-collections)
-  * [Storing Data](#storing-data)
-  * [Querying data](#querying-data)
-  * [Remove data](#remove-data)
-  * [Update data](#update-data)
-  * [Where Predicates](#where-predicates)
+- [Storing and Querying Data](#storing-and-querying-data)
+- [Defining Collections](#defining-collections)
+- [Removing Collections](#removing-collections)
+- [Storing Data](#storing-data)
+- [Querying data](#querying-data)
+- [Remove data](#remove-data)
+- [Update data](#update-data)
+- [Where Predicates](#where-predicates)
 
 ## Usage
 Run `go run .` or `go build .`, as you like.
@@ -29,7 +29,7 @@ You can connect using a socket once it has started like so:
 nc localhost 8080
 ```
 
-### Storing and Querying Data
+## Storing and Querying Data
 Rygel stores JSON document items in collections.
 
 All commands can be sent over socket. To test them individually, you may pipe time:
@@ -37,7 +37,7 @@ All commands can be sent over socket. To test them individually, you may pipe ti
 echo '{ "operation": "DEFINE COLLECTION", "collection_name": "test_collection" }' | nc localhost 8080
 ```
 
-### Defining Collections
+## Defining Collections
 ```json
 { 
   "operation": "DEFINE COLLECTION",
@@ -46,7 +46,7 @@ echo '{ "operation": "DEFINE COLLECTION", "collection_name": "test_collection" }
 ```
 Creates a new collection where document items may be stored.
 
-### Removing Collections
+## Removing Collections
 ```json
 { 
   "operation": "REMOVE COLLECTION",
@@ -55,7 +55,7 @@ Creates a new collection where document items may be stored.
 ```
 Removes a collection from the datbase. This removes all stored JSON document items within it.
 
-### Storing Data
+## Storing Data
 ```json
 { 
   "operation": "STORE",
@@ -65,7 +65,7 @@ Removes a collection from the datbase. This removes all stored JSON document ite
 ```
 Stores a document item in a collection. Data can be any valid JSON structure.
 
-### Querying data
+## Querying data
 ```json
 { 
   "operation": "FETCH",
@@ -148,7 +148,7 @@ It's possible to query based on deep properties and multiple WHERE clauses:
 ```
 > [{"color":"red","key":"dragonfruit","properties":{"internal_color":"white","spikes":"many"}}]
 
-### Remove data
+## Remove data
 ```javascript
 { 
   "operation": "REMOVE ITEMS",
@@ -161,7 +161,7 @@ It's possible to query based on deep properties and multiple WHERE clauses:
 ```
 Removes JSON document items from a collection. Limit is optional.
 
-### Update data
+## Update data
 ```json
 { 
   "operation": "UPDATE ITEM",
@@ -178,7 +178,7 @@ Updates JSON items in a collection. Works with where predicates and limit is opt
 
 Note, this command _replaces_ the data structure and is not an deep merge of the two data objects.
 
-### Where Predicates
+## Where Predicates
 Where predicates can compare strings, integers, and booleans.
 
 They provide a number of different operators useful for these value types:
