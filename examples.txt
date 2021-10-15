@@ -1,3 +1,0 @@
-{ "operation": "DEFINE COLLECTION", "collection_name": "test_collection" }
-{ "operation": "STORE", "collection_name": "test_collection", "data": {"foo": "bar"} }
-{ "operation": "FETCH", "collection_name": "test_collection", "limit": 1, "where": [ { "path": ["foo"], "operator": "=", "value": "bar" } ] }

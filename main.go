@@ -4,30 +4,20 @@ import (
 	"bufio"
 	"fmt"
 	"net"
-  "example.com/rygel/core" 
-  "example.com/rygel/commands" 
-  "example.com/rygel/input_parser" 
-  "example.com/rygel/services" 
-  "example.com/rygel/servers" 
+
+	"example.com/rygel/core"
+	"example.com/rygel/servers"
+	"example.com/rygel/application"
 )
 
-var storePersistenceService = services.StorePersistenceService{
-  DiskLocation: "./store.db",
-}
-
-func ExecuteStatementAgainstStore(store *core.Store, statement string) (result string, store_was_updated bool) {
-  cmdParameters := input_parser.Parse(statement)
-  command := commands.New(cmdParameters)
-
-  if !command.Valid() {
-    return "Command not valid", false
-  }
-
-  return command.Execute(store)
-}
-
-func buildConnectionHandler(store *core.Store) func(conn net.Conn) {
+func buildConnectionHandler(store *core.Store, application application.Application) func(conn net.Conn) {
   return func(conn net.Conn) {
+    if !application.BasicAuthService.Authenticate(conn) {
+      conn.Write([]byte("Could not authenticate"))
+      conn.Close()
+      return
+    }
+
     for {
       buffer, err := bufio.NewReader(conn).ReadBytes('\n')
 
@@ -37,10 +27,10 @@ func buildConnectionHandler(store *core.Store) func(conn net.Conn) {
         return
       }
 
-      result, store_was_updated := ExecuteStatementAgainstStore(store, string(buffer[:len(buffer)-1]))
+      result, store_was_updated := application.StatementExecutionService.Execute(store, string(buffer[:len(buffer)-1]))
 
       if store_was_updated {
-        storePersistenceService.PersistDataToDisk(store)
+        application.StorePersistenceService.PersistDataToDisk(store)
       }
 
       conn.Write([]byte(result))
@@ -50,7 +40,15 @@ func buildConnectionHandler(store *core.Store) func(conn net.Conn) {
 
 func main() {
   store := core.BuildStore()
-  storePersistenceService.LoadDataFromDisk(&store)
 
-  servers.StartSocketServer(buildConnectionHandler(&store))
+  application := application.New()
+
+  application.StorePersistenceService.LoadDataFromDisk(&store)
+
+  connectionHandler := buildConnectionHandler(
+    &store,
+    application,
+  )
+
+  servers.StartSocketServer(connectionHandler)
 }

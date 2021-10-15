@@ -1,4 +1,8 @@
 package command_parameters
+import (
+	"example.com/rygel/common"
+	comp "example.com/rygel/comparisons"
+)
 
 type CommandParameters struct {
 	Operation string `json:"operation"`
@@ -13,8 +17,22 @@ type CommandParameters struct {
 	Error string
 }
 
-func (cp CommandParameters) HasError() bool {
-	return cp.Error != ""
+func (params CommandParameters) HasError() bool {
+	return params.Error != ""
+}
+
+func (params CommandParameters) ExtractPredicateCollection() comp.PredicateCollection {
+  predicates := comp.BuildPredicateCollection()
+
+	for _, wp := range params.WhereClauses {
+		predicates.AddPredicate(comp.Predicate{
+			Path: common.DataPath{RealPath: wp.Path},
+			Operator: wp.Operator,
+			Value: wp.Value,
+		})
+  }
+
+  return predicates
 }
 
 func New() CommandParameters {
