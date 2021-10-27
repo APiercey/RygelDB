@@ -5,12 +5,11 @@ import (
 	"fmt"
 	"net"
 
-	"example.com/rygel/core"
 	"example.com/rygel/servers"
 	"example.com/rygel/application"
 )
 
-func buildConnectionHandler(store *core.Store, application application.Application) func(conn net.Conn) {
+func buildConnectionHandler(application *application.Application) func(conn net.Conn) {
   return func(conn net.Conn) {
     if !application.BasicAuthService.Authenticate(conn) {
       conn.Write([]byte("Could not authenticate"))
@@ -27,10 +26,10 @@ func buildConnectionHandler(store *core.Store, application application.Applicati
         return
       }
 
-      result, store_was_updated := application.StatementExecutionService.Execute(store, string(buffer[:len(buffer)-1]))
+      result, store_was_updated := application.StatementExecutionService.Execute(&application.Store, string(buffer[:len(buffer)-1]))
 
       if store_was_updated {
-        application.StorePersistenceService.PersistDataToDisk(store)
+        application.StorePersistenceService.PersistDataToDisk(&application.Store)
       }
 
       conn.Write([]byte(result))
@@ -39,15 +38,12 @@ func buildConnectionHandler(store *core.Store, application application.Applicati
 }
 
 func main() {
-  store := core.BuildStore()
-
   application := application.New()
 
-  application.StorePersistenceService.LoadDataFromDisk(&store)
+  application.StorePersistenceService.LoadDataFromDisk(&application.Store)
 
   connectionHandler := buildConnectionHandler(
-    &store,
-    application,
+    &application,
   )
 
   servers.StartSocketServer(connectionHandler)
