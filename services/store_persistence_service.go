@@ -10,6 +10,7 @@ import (
 
 type StorePersistenceService struct {
   DiskLocation string
+  Store *core.Store
 }
 
 func fileExists(diskLocation string) bool {
@@ -20,7 +21,7 @@ func fileExists(diskLocation string) bool {
     return !info.IsDir()
 }
 
-func (service StorePersistenceService) LoadDataFromDisk(store *core.Store) {
+func (service *StorePersistenceService) LoadDataFromDisk() {
   if !fileExists(service.DiskLocation) {
     return
   }
@@ -41,6 +42,8 @@ func (service StorePersistenceService) LoadDataFromDisk(store *core.Store) {
     panic(err)
   }
 
+  // TODO: Perhaps a SetCollections() func would be good?
+  store := service.Store
   store.Collections = collections
 }
 

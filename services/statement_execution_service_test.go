@@ -1,10 +1,9 @@
-package main
+package services
 
 import (
 	"testing"
 
 	"example.com/rygel/core"
-	"example.com/rygel/services"
 )
 
 func setupStore() core.Store {
@@ -15,7 +14,7 @@ func setupStore() core.Store {
 
 func TestDefineCollection(t *testing.T) {
   testStore := setupStore()
-  serv := services.StatementExecutionService{}
+  serv := StatementExecutionService{}
   expected := "OK"
 
   result, _ := serv.Execute(&testStore, `
@@ -31,7 +30,7 @@ func TestDefineCollection(t *testing.T) {
 
 func TestRemoveCollection(t *testing.T) {
   testStore := setupStore()
-  serv := services.StatementExecutionService{}
+  serv := StatementExecutionService{}
   expected := "OK"
 
   serv.Execute(&testStore, `{ "operation": "DEFINE COLLECTION", "collection_name": "test_collection" } `)
@@ -46,7 +45,7 @@ func TestRemoveCollection(t *testing.T) {
 
 func TestInsertItem(t *testing.T) {
   testStore := setupStore()
-  serv := services.StatementExecutionService{}
+  serv := StatementExecutionService{}
   expected := "OK"
 
   serv.Execute(&testStore, `{ "operation": "DEFINE COLLECTION", "collection_name": "test_collection" } `)
@@ -65,7 +64,7 @@ func TestInsertItem(t *testing.T) {
 
 func TestRemoveSingleItem(t *testing.T) {
   testStore := setupStore()
-  serv := services.StatementExecutionService{}
+  serv := StatementExecutionService{}
 
   serv.Execute(&testStore, `{
     "operation": "DEFINE COLLECTION",
@@ -92,7 +91,7 @@ func TestRemoveSingleItem(t *testing.T) {
 
 func TestRemovedItemsNotRetreivable(t *testing.T) {
   testStore := setupStore()
-  serv := services.StatementExecutionService{}
+  serv := StatementExecutionService{}
   expected := `[{"foo":"bar"}]`
 
   serv.Execute(&testStore, `{
@@ -124,7 +123,7 @@ func TestRemovedItemsNotRetreivable(t *testing.T) {
 
 func TestFetchSingleItem(t *testing.T) {
   testStore := setupStore()
-  serv := services.StatementExecutionService{}
+  serv := StatementExecutionService{}
   expected := `[{"foo":"bar"}]`
 
   serv.Execute(&testStore, `{
@@ -156,7 +155,7 @@ func TestFetchSingleItem(t *testing.T) {
 
 func TestFetchItemWithEqualsWhereClause(t *testing.T) {
   testStore := setupStore()
-  serv := services.StatementExecutionService{}
+  serv := StatementExecutionService{}
   expected := `[{"foo":"bar","some":{"nested":{"path":"Hello World"}}}]`
 
   serv.Execute(&testStore, `{
@@ -191,7 +190,7 @@ func TestFetchItemWithEqualsWhereClause(t *testing.T) {
 
 func TestFetchItemWithGreaterThanWhereClause(t *testing.T) {
   testStore := setupStore()
-  serv := services.StatementExecutionService{}
+  serv := StatementExecutionService{}
   expected := `[{"foo":"bar","my_num":23}]`
 
   serv.Execute(&testStore, `{
@@ -226,7 +225,7 @@ func TestFetchItemWithGreaterThanWhereClause(t *testing.T) {
 
 func TestFetchItemsMultipleWhereClause(t *testing.T) {
   testStore := setupStore()
-  serv := services.StatementExecutionService{}
+  serv := StatementExecutionService{}
   expected := `[{"health":50,"match":"me"},{"health":99,"match":"me"}]`
 
   serv.Execute(&testStore, `{
@@ -266,7 +265,7 @@ func TestFetchItemsMultipleWhereClause(t *testing.T) {
 
 func TestUpdateItem(t *testing.T) {
   testStore := setupStore()
-  serv := services.StatementExecutionService{}
+  serv := StatementExecutionService{}
 
   serv.Execute(&testStore, `{
     "operation": "DEFINE COLLECTION",
