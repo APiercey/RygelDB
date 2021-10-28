@@ -1,7 +1,7 @@
 package core
 
 import (
-	"example.com/rygel/common"
+	"rygel/common"
 )
 
 type Item struct {

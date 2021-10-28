@@ -1,9 +1,9 @@
 package commands
 
 import (
-	"example.com/rygel/core"
-	cp "example.com/rygel/command_parameters"
-	comp "example.com/rygel/comparisons"
+	"rygel/core"
+	cp "rygel/command_parameters"
+	comp "rygel/comparisons"
 )
 
 type Command interface {

@@ -3,8 +3,8 @@ package comparisons
 import (
 	"testing"
 
-	"example.com/rygel/common"
-	"example.com/rygel/core"
+	"rygel/common"
+	"rygel/core"
 )
 
 func TestFilteringByEquals(t *testing.T) {

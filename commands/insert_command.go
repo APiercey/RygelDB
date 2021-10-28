@@ -1,8 +1,8 @@
 package commands
 
 import (
-	"example.com/rygel/core"
-	"example.com/rygel/common"
+	"rygel/core"
+	"rygel/common"
 )
 
 type insertCommand struct {

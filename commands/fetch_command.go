@@ -2,8 +2,8 @@ package commands
 
 import (
 	"encoding/json"
-	comp "example.com/rygel/comparisons"
-	"example.com/rygel/core"
+	comp "rygel/comparisons"
+	"rygel/core"
 )
 
 type fetchCommand struct {

@@ -1,11 +1,11 @@
 package services
 
 import (
-  "example.com/rygel/commands" 
-  result "example.com/rygel/command_result" 
+  "rygel/commands" 
+  result "rygel/command_result" 
 
-  "example.com/rygel/core" 
-  "example.com/rygel/services/job" 
+  "rygel/core" 
+  "rygel/services/job" 
 )
 
 type CommandExecutor struct {

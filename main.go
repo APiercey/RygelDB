@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"net"
 
-	"example.com/rygel/servers"
-	"example.com/rygel/application"
+	"rygel/servers"
+	"rygel/application"
 )
 
 func buildConnectionHandler(application *application.Application) func(conn net.Conn) {

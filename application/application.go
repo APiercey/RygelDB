@@ -1,9 +1,9 @@
 package application
 
 import (
-	"example.com/rygel/core"
-	"example.com/rygel/services"
-	"example.com/rygel/services/job"
+	"rygel/core"
+	"rygel/services"
+	"rygel/services/job"
 	"flag"
 )
 

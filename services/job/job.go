@@ -1,8 +1,8 @@
 package job
 
 import (
-  "example.com/rygel/commands" 
-  result "example.com/rygel/command_result" 
+  "rygel/commands" 
+  result "rygel/command_result" 
 )
 
 type Job struct {

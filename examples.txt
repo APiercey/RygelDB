@@ -1,0 +1,4 @@
+{ "operation": "DEFINE COLLECTION", "collection_name": "test_collection" }
+{ "operation": "STORE", "collection_name": "test_collection", "data": {"should not": "fetch"} }
+{ "operation": "STORE", "collection_name": "test_collection", "data": {"foo": "bar", "my_num": 23} }
+{ "operation": "FETCH", "collection_name": "test_collection", "limit": 1, "where": [ { "path": ["my_num"], "operator": ">", "value": 22 } ] }

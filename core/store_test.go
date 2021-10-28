@@ -2,7 +2,7 @@ package core
 
 import (
 	"testing"
-	"example.com/rygel/common"
+	"rygel/common"
 )
 
 func TestCreateCollection(t *testing.T) {
