@@ -5,7 +5,6 @@ import (
 	"example.com/rygel/services"
 	"example.com/rygel/services/job"
 	"flag"
-  "fmt"
 )
 
 type Application struct {
