@@ -6,18 +6,20 @@ import (
 	"example.com/rygel/core"
 )
 
-func setupStore() core.Store {
-  testStore := core.BuildStore()
+func setupService() StatementExecutionService {
+  store := core.BuildStore()
+  commandExecutor := CommandExecutor{ Store: &store }
 
-  return testStore
+  return StatementExecutionService{
+    CommandExecutor: commandExecutor,
+  }
 }
 
 func TestDefineCollection(t *testing.T) {
-  testStore := setupStore()
-  serv := StatementExecutionService{}
+  serv := setupService()
   expected := "OK"
 
-  result, _ := serv.Execute(&testStore, `
+  result, _ := serv.Execute(`
     { "operation": "DEFINE COLLECTION", "collection_name": "test_collection" }
   `)
 
@@ -29,12 +31,11 @@ func TestDefineCollection(t *testing.T) {
 }
 
 func TestRemoveCollection(t *testing.T) {
-  testStore := setupStore()
-  serv := StatementExecutionService{}
+  serv := setupService()
   expected := "OK"
 
-  serv.Execute(&testStore, `{ "operation": "DEFINE COLLECTION", "collection_name": "test_collection" } `)
-  result, _ := serv.Execute(&testStore, `{ "operation": "REMOVE COLLECTION", "collection_name": "test_collection" } `)
+  serv.Execute(`{ "operation": "DEFINE COLLECTION", "collection_name": "test_collection" } `)
+  result, _ := serv.Execute(`{ "operation": "REMOVE COLLECTION", "collection_name": "test_collection" } `)
 
   if result != expected {
     t.Log("Expected: ", expected)
@@ -44,12 +45,11 @@ func TestRemoveCollection(t *testing.T) {
 }
 
 func TestInsertItem(t *testing.T) {
-  testStore := setupStore()
-  serv := StatementExecutionService{}
+  serv := setupService()
   expected := "OK"
 
-  serv.Execute(&testStore, `{ "operation": "DEFINE COLLECTION", "collection_name": "test_collection" } `)
-  result, _ := serv.Execute(&testStore, `{ 
+  serv.Execute(`{ "operation": "DEFINE COLLECTION", "collection_name": "test_collection" } `)
+  result, _ := serv.Execute(`{ 
     "operation": "STORE",
     "collection_name": "test_collection",
     "data": {"foo": "bar"}
@@ -63,24 +63,23 @@ func TestInsertItem(t *testing.T) {
 }
 
 func TestRemoveSingleItem(t *testing.T) {
-  testStore := setupStore()
-  serv := StatementExecutionService{}
+  serv := setupService()
 
-  serv.Execute(&testStore, `{
+  serv.Execute(`{
     "operation": "DEFINE COLLECTION",
     "collection_name": "test_collection"
   }`)
-  serv.Execute(&testStore, `{ 
+  serv.Execute(`{ 
     "operation": "STORE",
     "collection_name": "test_collection",
     "data": {"foo": "bar"}
   }`)
-  serv.Execute(&testStore, `{ 
+  serv.Execute(`{ 
     "operation": "STORE",
     "collection_name": "test_collection",
     "data": {"foo": "bar", "key": "test_item"}
   }`)
-  result, _ := serv.Execute(&testStore, `{ 
+  result, _ := serv.Execute(`{ 
     "operation": "REMOVE ITEMS",
     "collection_name": "test_collection",
     "limit": 1
@@ -90,25 +89,24 @@ func TestRemoveSingleItem(t *testing.T) {
 }
 
 func TestRemovedItemsNotRetreivable(t *testing.T) {
-  testStore := setupStore()
-  serv := StatementExecutionService{}
+  serv := setupService()
   expected := `[{"foo":"bar"}]`
 
-  serv.Execute(&testStore, `{
+  serv.Execute(`{
     "operation": "DEFINE COLLECTION",
     "collection_name": "test_collection"
   }`)
-  serv.Execute(&testStore, `{ 
+  serv.Execute(`{ 
     "operation": "STORE",
     "collection_name": "test_collection",
     "data": {"foo": "bar"}
   }`)
-  serv.Execute(&testStore, `{ 
+  serv.Execute(`{ 
     "operation": "REMOVE ITEMS",
     "collection_name": "test_collection",
     "limit": 1
   }`)
-  result, _ := serv.Execute(&testStore, `{ 
+  result, _ := serv.Execute(`{ 
     "operation": "FETCH",
     "collection_name": "test_collection",
     "limit": 1
@@ -122,25 +120,24 @@ func TestRemovedItemsNotRetreivable(t *testing.T) {
 }
 
 func TestFetchSingleItem(t *testing.T) {
-  testStore := setupStore()
-  serv := StatementExecutionService{}
+  serv := setupService()
   expected := `[{"foo":"bar"}]`
 
-  serv.Execute(&testStore, `{
+  serv.Execute(`{
     "operation": "DEFINE COLLECTION",
     "collection_name": "test_collection"
   }`)
-  serv.Execute(&testStore, `{ 
+  serv.Execute(`{ 
     "operation": "STORE",
     "collection_name": "test_collection",
     "data": {"foo": "bar"}
   }`)
-  serv.Execute(&testStore, `{ 
+  serv.Execute(`{ 
     "operation": "STORE",
     "collection_name": "test_collection",
     "data": {"pow": "blam"}
   }`)
-  result, _ := serv.Execute(&testStore, `{ 
+  result, _ := serv.Execute(`{ 
     "operation": "FETCH",
     "collection_name": "test_collection",
     "limit": 1
@@ -154,25 +151,24 @@ func TestFetchSingleItem(t *testing.T) {
 }
 
 func TestFetchItemWithEqualsWhereClause(t *testing.T) {
-  testStore := setupStore()
-  serv := StatementExecutionService{}
+  serv := setupService()
   expected := `[{"foo":"bar","some":{"nested":{"path":"Hello World"}}}]`
 
-  serv.Execute(&testStore, `{
+  serv.Execute(`{
     "operation": "DEFINE COLLECTION",
     "collection_name": "test_collection"
   }`)
-  serv.Execute(&testStore, `{ 
+  serv.Execute(`{ 
     "operation": "STORE",
     "collection_name": "test_collection",
     "data": {"should not": "fetch"}
   }`)
-  serv.Execute(&testStore, `{ 
+  serv.Execute(`{ 
     "operation": "STORE",
     "collection_name": "test_collection",
     "data": {"foo": "bar", "some": {"nested": {"path": "Hello World"}}}
   }`)
-  result, _ := serv.Execute(&testStore, `{ 
+  result, _ := serv.Execute(`{ 
     "operation": "FETCH",
     "collection_name": "test_collection",
     "limit": 1,
@@ -189,25 +185,24 @@ func TestFetchItemWithEqualsWhereClause(t *testing.T) {
 }
 
 func TestFetchItemWithGreaterThanWhereClause(t *testing.T) {
-  testStore := setupStore()
-  serv := StatementExecutionService{}
+  serv := setupService()
   expected := `[{"foo":"bar","my_num":23}]`
 
-  serv.Execute(&testStore, `{
+  serv.Execute(`{
     "operation": "DEFINE COLLECTION",
     "collection_name": "test_collection"
   }`)
-  serv.Execute(&testStore, `{ 
+  serv.Execute(`{ 
     "operation": "STORE",
     "collection_name": "test_collection",
     "data": {"should not": "fetch"}
   }`)
-  serv.Execute(&testStore, `{ 
+  serv.Execute(`{ 
     "operation": "STORE",
     "collection_name": "test_collection",
     "data": {"foo": "bar", "my_num": 23}
   }`)
-  result, _ := serv.Execute(&testStore, `{ 
+  result, _ := serv.Execute(`{ 
     "operation": "FETCH",
     "collection_name": "test_collection",
     "limit": 1,
@@ -224,30 +219,29 @@ func TestFetchItemWithGreaterThanWhereClause(t *testing.T) {
 }
 
 func TestFetchItemsMultipleWhereClause(t *testing.T) {
-  testStore := setupStore()
-  serv := StatementExecutionService{}
+  serv := setupService()
   expected := `[{"health":50,"match":"me"},{"health":99,"match":"me"}]`
 
-  serv.Execute(&testStore, `{
+  serv.Execute(`{
     "operation": "DEFINE COLLECTION",
     "collection_name": "test_collection"
   }`)
-  serv.Execute(&testStore, `{ 
+  serv.Execute(`{ 
     "operation": "STORE",
     "collection_name": "test_collection",
     "data": {"health": 50, "match":"me"}
   }`)
-  serv.Execute(&testStore, `{ 
+  serv.Execute(`{ 
     "operation": "STORE",
     "collection_name": "test_collection",
     "data": {"health": 99, "match":"me"}
   }`)
-  serv.Execute(&testStore, `{ 
+  serv.Execute(`{ 
     "operation": "STORE",
     "collection_name": "test_collection",
     "data": {"foo": "choo", "match":"me"}
   }`)
-  result, _ := serv.Execute(&testStore, `{ 
+  result, _ := serv.Execute(`{ 
     "operation": "FETCH",
     "collection_name": "test_collection",
     "where": [
@@ -264,19 +258,18 @@ func TestFetchItemsMultipleWhereClause(t *testing.T) {
 }
 
 func TestUpdateItem(t *testing.T) {
-  testStore := setupStore()
-  serv := StatementExecutionService{}
+  serv := setupService()
 
-  serv.Execute(&testStore, `{
+  serv.Execute(`{
     "operation": "DEFINE COLLECTION",
     "collection_name": "test_collection"
   }`)
-  serv.Execute(&testStore, `{ 
+  serv.Execute(`{ 
     "operation": "STORE",
     "collection_name": "test_collection",
     "data": {"foo": "bar"}
   }`)
-  updateResult, _ := serv.Execute(&testStore, `{ 
+  updateResult, _ := serv.Execute(`{ 
     "operation": "UPDATE ITEM",
     "collection_name": "test_collection",
     "data": {"foo": "new value"}
@@ -284,7 +277,7 @@ func TestUpdateItem(t *testing.T) {
 
   if updateResult != "Updated 1 items" { t.Error("Command does not work", updateResult) }
 
-  fetchResult, _ := serv.Execute(&testStore, `{ 
+  fetchResult, _ := serv.Execute(`{ 
     "operation": "FETCH",
     "collection_name": "test_collection",
     "limit": 1,

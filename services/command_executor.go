@@ -2,7 +2,7 @@ package services
 
 import (
   "example.com/rygel/commands" 
-  "example.com/rygel/result" 
+  result "example.com/rygel/command_result" 
 
   "example.com/rygel/core" 
   "example.com/rygel/services/job" 

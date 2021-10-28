@@ -2,14 +2,14 @@ package job
 
 import (
   "example.com/rygel/commands" 
-  "example.com/rygel/result" 
+  result "example.com/rygel/command_result" 
 )
 
 type Job struct {
-  ResultChan chan result.Result
+  ResultChan chan result.CommandResult
   Command commands.Command
 }
 
 func New(command commands.Command) Job {
-  return Job{ResultChan: make(chan result.Result, 1), Command: command}
+  return Job{ResultChan: make(chan result.CommandResult, 1), Command: command}
 }
