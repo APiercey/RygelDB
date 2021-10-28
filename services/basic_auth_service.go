@@ -33,10 +33,6 @@ func extractCreds(credsKV string) map[string]string {
   return foundCreds
 }
 
-func extractPass(passKV string) string {
-  return strings.Split(passKV, "pass=")[1]
-}
-
 func (service BasicAuthService) getCredentials(conn net.Conn) (username string, password string, err error) {
     buffer, err := bufio.NewReader(conn).ReadBytes('\n')
 
