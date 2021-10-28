@@ -3,15 +3,16 @@ package services
 import (
 	"testing"
 
-	"example.com/rygel/core"
+	"rygel/core"
+	cx "rygel/services/command_executor"
 )
 
 func setupService() StatementExecutionService {
   store := core.BuildStore()
-  commandExecutor := CommandExecutor{ Store: &store }
+  commandExecutor := cx.SyncCommandExecutor{ Store: &store }
 
   return StatementExecutionService{
-    CommandExecutor: commandExecutor,
+    CommandExecutor: &commandExecutor,
   }
 }
 

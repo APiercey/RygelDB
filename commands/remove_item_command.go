@@ -3,8 +3,8 @@ package commands
 import (
 	"strconv"
 
-	"example.com/rygel/core"
-	comp "example.com/rygel/comparisons" 
+	"rygel/core"
+	comp "rygel/comparisons" 
 )
 
 type removeItemCommand struct {

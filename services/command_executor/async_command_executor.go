@@ -1,4 +1,4 @@
-package services
+package command_executor
 
 import (
   "rygel/commands" 
@@ -8,12 +8,12 @@ import (
   "rygel/services/job" 
 )
 
-type CommandExecutor struct {
+type AsyncCommandExecutor struct {
   JobQueue chan job.Job
   Store *core.Store
 }
 
-func (service *CommandExecutor) Enqueue(command commands.Command) job.Job {
+func (service *AsyncCommandExecutor) Enqueue(command commands.Command) job.Job {
   job := job.New(command)
 
   if !command.Valid() {
@@ -25,7 +25,7 @@ func (service *CommandExecutor) Enqueue(command commands.Command) job.Job {
   return job
 }
 
-func (service *CommandExecutor) Process() bool {
+func (service *AsyncCommandExecutor) Process() bool {
   select {
   case job := <- service.JobQueue:
       data, storeUpdated := job.Command.Execute(service.Store)
@@ -36,3 +36,4 @@ func (service *CommandExecutor) Process() bool {
       return false
   }
 }
+

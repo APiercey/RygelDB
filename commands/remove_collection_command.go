@@ -1,7 +1,7 @@
 package commands
 
 import (
-  "example.com/rygel/core" 
+  "rygel/core" 
 )
 
 type removeCollectionCommand struct {

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-  "example.com/rygel/core" 
+  "rygel/core" 
 )
 
 type StorePersistenceService struct {

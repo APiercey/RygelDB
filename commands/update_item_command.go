@@ -3,9 +3,9 @@ package commands
 import (
 	"strconv"
 
-	comp "example.com/rygel/comparisons"
-	"example.com/rygel/core"
-	"example.com/rygel/common"
+	comp "rygel/comparisons"
+	"rygel/core"
+	"rygel/common"
 )
 
 type updateItemCommand struct {

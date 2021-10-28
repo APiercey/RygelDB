@@ -1,7 +1,7 @@
 package command_parameters
 import (
-	"example.com/rygel/common"
-	comp "example.com/rygel/comparisons"
+	"rygel/common"
+	comp "rygel/comparisons"
 )
 
 type CommandParameters struct {

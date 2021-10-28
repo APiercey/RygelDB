@@ -1,8 +1,8 @@
 package comparisons
 
 import (
-	"example.com/rygel/core"
-	"example.com/rygel/common"
+	"rygel/core"
+	"rygel/common"
 )
 
 type PredicateCollection struct {
