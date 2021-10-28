@@ -4,6 +4,7 @@ import (
 	"rygel/core"
 	"rygel/services"
 	cx "rygel/services/command_executor"
+	sx "rygel/services/statement_executor"
 	"rygel/services/job"
 	"flag"
 )
@@ -11,7 +12,7 @@ import (
 type Application struct {
   Store core.Store
   BasicAuthService services.BasicAuthService
-  StatementExecutionService services.StatementExecutionService
+  StatementExecutor sx.StatementExecutor
   CommandExecutor cx.CommandExecutor
   StorePersistenceService services.StorePersistenceService
 }
@@ -33,7 +34,7 @@ func New() Application {
     JobQueue: make(chan job.Job),
   }
 
-  statementExectionService := services.StatementExecutionService{
+  statementExecutor := sx.StatementExecutor{
     CommandExecutor: &commandExecutor,
   }
 
@@ -45,7 +46,7 @@ func New() Application {
   return Application{
     Store: store,
     BasicAuthService: basicAuthService,
-    StatementExecutionService: statementExectionService,
+    StatementExecutor: statementExecutor,
     CommandExecutor: &commandExecutor,
     StorePersistenceService: storePersistenceService,
   }

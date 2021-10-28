@@ -1,4 +1,4 @@
-package services
+package statement_executor
 
 import (
   "rygel/commands" 
@@ -6,11 +6,11 @@ import (
   "rygel/services/command_executor"
 )
 
-type StatementExecutionService struct {
+type StatementExecutor struct {
   CommandExecutor command_executor.CommandExecutor
 }
 
-func (service StatementExecutionService) Execute(statement string) (payload string, store_was_updated bool) {
+func (service StatementExecutor) Execute(statement string) (payload string, store_was_updated bool) {
   cmdParameters := input_parser.Parse(statement)
   command := commands.New(cmdParameters)
   job := service.CommandExecutor.Enqueue(command)

@@ -26,7 +26,7 @@ func buildConnectionHandler(application *application.Application) func(conn net.
         return
       }
 
-      result, store_was_updated := application.StatementExecutionService.Execute(string(buffer[:len(buffer)-1]))
+      result, store_was_updated := application.StatementExecutor.Execute(string(buffer[:len(buffer)-1]))
 
       if store_was_updated {
         application.StorePersistenceService.PersistDataToDisk(&application.Store)

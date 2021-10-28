@@ -1,4 +1,4 @@
-package services
+package statement_executor
 
 import (
 	"testing"
@@ -7,11 +7,11 @@ import (
 	cx "rygel/services/command_executor"
 )
 
-func setupService() StatementExecutionService {
+func setupService() StatementExecutor {
   store := core.BuildStore()
   commandExecutor := cx.SyncCommandExecutor{ Store: &store }
 
-  return StatementExecutionService{
+  return StatementExecutor{
     CommandExecutor: &commandExecutor,
   }
 }
