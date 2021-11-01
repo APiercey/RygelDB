@@ -15,6 +15,7 @@ type CommandParameters struct {
 	} `json:"where"`
 	Data map[string]interface{} `json:"data"`
 	Error string
+	RawStatement string
 }
 
 func (params CommandParameters) HasError() bool {

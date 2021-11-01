@@ -15,6 +15,10 @@ type updateItemCommand struct {
   data common.Data
 }
 
+func (c updateItemCommand) RawStatement() string {
+  return "";
+}
+
 func (c updateItemCommand) Execute(s *core.Store) (string, bool) {
   numFoundItems := 0
 

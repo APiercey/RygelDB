@@ -8,6 +8,10 @@ type removeCollectionCommand struct {
   collectionName string
 }
 
+func (c removeCollectionCommand) RawStatement() string {
+  return "";
+}
+
 func (c removeCollectionCommand) Execute(s *core.Store) (string, bool) {
   if s.UndefineCollection(c.collectionName) {
     return "OK", true

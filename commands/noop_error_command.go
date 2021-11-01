@@ -8,6 +8,10 @@ type noopErrorCommand struct {
   err string
 }
 
+func (c noopErrorCommand) RawStatement() string {
+  return "";
+}
+
 func (c noopErrorCommand) Execute(s *core.Store) (string, bool) {
   return c.err, false
 }

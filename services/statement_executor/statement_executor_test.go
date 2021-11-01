@@ -5,14 +5,22 @@ import (
 
 	"rygel/core"
 	cx "rygel/services/command_executor"
+	"rygel/services"
 )
 
 func setupService() StatementExecutor {
   store := core.BuildStore()
   commandExecutor := cx.SyncCommandExecutor{ Store: &store }
 
+  storePersistenceService := services.StorePersistenceService{
+    DiskLocation: "./store_test.db",
+    PersistenceDir: "./",
+    Store: &store,
+  }
+
   return StatementExecutor{
     CommandExecutor: &commandExecutor,
+    StorePersistenceService: storePersistenceService,
   }
 }
 

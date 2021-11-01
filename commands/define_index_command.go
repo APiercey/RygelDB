@@ -9,6 +9,10 @@ type defineIndexCommand struct {
   path string
 }
 
+func (c defineIndexCommand) RawStatement() string {
+  return "";
+}
+
 func (c defineIndexCommand) Execute(s *core.Store) (string, bool) {
   // index := store.BuildIndex(c.path)
 

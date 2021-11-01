@@ -14,7 +14,6 @@ type Application struct {
   BasicAuthService services.BasicAuthService
   StatementExecutor sx.StatementExecutor
   CommandExecutor cx.CommandExecutor
-  StorePersistenceService services.StorePersistenceService
 }
 
 func New() Application {
@@ -34,13 +33,15 @@ func New() Application {
     JobQueue: make(chan job.Job),
   }
 
-  statementExecutor := sx.StatementExecutor{
-    CommandExecutor: &commandExecutor,
-  }
-
   storePersistenceService := services.StorePersistenceService{
     DiskLocation: "./store.db",
+    PersistenceDir: "/tmp",
     Store: &store,
+  }
+
+  statementExecutor := sx.StatementExecutor{
+    CommandExecutor: &commandExecutor,
+    StorePersistenceService: storePersistenceService,
   }
 
   return Application{
@@ -48,6 +49,5 @@ func New() Application {
     BasicAuthService: basicAuthService,
     StatementExecutor: statementExecutor,
     CommandExecutor: &commandExecutor,
-    StorePersistenceService: storePersistenceService,
   }
 }
