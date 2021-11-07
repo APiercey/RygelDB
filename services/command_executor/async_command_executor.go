@@ -28,12 +28,11 @@ func (service *AsyncCommandExecutor) Enqueue(command commands.Command) job.Job {
 func (service *AsyncCommandExecutor) Process() bool {
   select {
   case job := <- service.JobQueue:
-      data, storeUpdated := job.Command.Execute(service.Store)
-      job.ResultChan <- result.New(storeUpdated, data)
+    data, storeUpdated := job.Command.Execute(service.Store)
+    job.ResultChan <- result.New(storeUpdated, data)
 
-      return true
-    default:
-      return false
+    return true
+  default:
+    return false
   }
 }
-

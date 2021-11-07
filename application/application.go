@@ -5,8 +5,11 @@ import (
 	"rygel/services"
 	cx "rygel/services/command_executor"
 	sx "rygel/services/statement_executor"
+	sr "rygel/services/statement_replay"
+  "rygel/services/ledger"
 	"rygel/services/job"
 	"flag"
+  "os"
 )
 
 type Application struct {
@@ -14,6 +17,7 @@ type Application struct {
   BasicAuthService services.BasicAuthService
   StatementExecutor sx.StatementExecutor
   CommandExecutor cx.CommandExecutor
+  StatementReplay sr.StatementReplay
 }
 
 func New() Application {
@@ -33,15 +37,20 @@ func New() Application {
     JobQueue: make(chan job.Job),
   }
 
-  storePersistenceService := services.StorePersistenceService{
-    DiskLocation: "./store.db",
-    PersistenceDir: "/tmp",
-    Store: &store,
+  f, _ := os.OpenFile("./store.ledger", os.O_RDWR, 0644)
+
+  ledger := ledger.OnDiskLedger{
+    LedgerFile: f,
   }
 
   statementExecutor := sx.StatementExecutor{
     CommandExecutor: &commandExecutor,
-    StorePersistenceService: storePersistenceService,
+    Ledger: &ledger,
+  }
+
+  statementReplay := sr.StatementReplay{
+    CommandExecutor: &commandExecutor,
+    Ledger: &ledger,
   }
 
   return Application{
@@ -49,5 +58,6 @@ func New() Application {
     BasicAuthService: basicAuthService,
     StatementExecutor: statementExecutor,
     CommandExecutor: &commandExecutor,
+    StatementReplay: statementReplay,
   }
 }

@@ -36,9 +36,9 @@ func buildConnectionHandler(application *application.Application) func(conn net.
 func main() {
   application := application.New()
 
-  application.StorePersistenceService.LoadDataFromDisk()
-
   go func() { for { application.CommandExecutor.Process() } }()
+
+  application.StatementReplay.Replay()
 
   connectionHandler := buildConnectionHandler(
     &application,

@@ -4,12 +4,12 @@ import (
   "rygel/commands" 
   "rygel/input_parser" 
   "rygel/services/command_executor"
-  "rygel/services"
+  "rygel/services/ledger"
 )
 
 type StatementExecutor struct {
   CommandExecutor command_executor.CommandExecutor
-  StorePersistenceService services.StorePersistenceService
+  Ledger ledger.Ledger
 }
 
 func (service StatementExecutor) Execute(statement string) string {
@@ -19,7 +19,7 @@ func (service StatementExecutor) Execute(statement string) string {
   result := <- job.ResultChan
 
   if result.StoreWasUpdated() {
-    service.StorePersistenceService.LogCommand(statement)
+    service.Ledger.AppendRecord(statement)
   }
 
   return result.CommandResult()
