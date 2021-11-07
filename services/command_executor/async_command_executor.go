@@ -5,7 +5,7 @@ import (
   result "rygel/command_result" 
 
   "rygel/core" 
-  "rygel/services/job" 
+  "rygel/services/command_executor/job" 
 )
 
 type AsyncCommandExecutor struct {

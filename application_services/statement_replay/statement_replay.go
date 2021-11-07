@@ -3,7 +3,7 @@ package statement_replay
 import (
 	"rygel/commands"
 	"rygel/services/command_executor"
-  "rygel/input_parser"
+  "rygel/infrastructure/input_parser"
 	"rygel/infrastructure/ledger"
 )
 

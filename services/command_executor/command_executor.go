@@ -2,7 +2,7 @@ package command_executor
 
 import (
   "rygel/commands" 
-  "rygel/services/job" 
+  "rygel/services/command_executor/job" 
 )
 
 type CommandExecutor interface {

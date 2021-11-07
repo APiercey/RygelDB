@@ -2,8 +2,8 @@ package statement_executor
 
 import (
 	"rygel/commands"
-	"rygel/input_parser"
 	"rygel/services/command_executor"
+	"rygel/infrastructure/input_parser"
 	"rygel/infrastructure/ledger"
 )
 
