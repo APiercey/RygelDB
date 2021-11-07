@@ -3,6 +3,7 @@ package statement_replay
 import (
 	"rygel/commands"
 	"rygel/services/command_executor"
+  "rygel/input_parser"
 	"rygel/services/ledger"
 )
 
@@ -13,7 +14,8 @@ type StatementReplay struct {
 
 func (service StatementReplay) Replay() {
   fn := func(line string) {
-    command := commands.New(line)
+    params := input_parser.Parse(line)
+    command := commands.New(params)
     service.CommandExecutor.Enqueue(command)
   }
 

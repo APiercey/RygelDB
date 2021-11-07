@@ -4,7 +4,7 @@ import (
 	"testing"
 	"github.com/stretchr/testify/assert"
 
-	cp "rygel/command_parameters"
+	cp "rygel/commands/command_parameters"
 )
 
 func TestReturnsDefineCollection(t *testing.T) {

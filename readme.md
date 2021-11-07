@@ -189,6 +189,15 @@ They provide a number of different operators useful for these value types:
 - `<` compares if value on path is less than the expected value.
 - `<=` compares if value on path is less than or equal to the expected value.
 
+
+# TODOs / Wishlist
+- [x] Setup Dependency-Injection strcture for the application and tests
+- [x] Move away from writing entire store to a file on every change to a "ledger" based persistence.
+- [ ] Document project architecture and implementation.
+- [ ] Move project structure to the [Standard Go-Lang Layout](https://github.com/golang-standards/project-layout)
+- [ ] Add Snapshotting to Persistence Ledgers.
+- [ ] Add Indices/quick key lookups for nested data structures.
+
 ---
 
 > May your afterlife be almost as pleasant as mine. - Dominar Rygel the XVI

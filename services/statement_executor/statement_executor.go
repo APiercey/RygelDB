@@ -1,9 +1,10 @@
 package statement_executor
 
 import (
-  "rygel/commands" 
-  "rygel/services/command_executor"
-  "rygel/services/ledger"
+	"rygel/commands"
+	"rygel/input_parser"
+	"rygel/services/command_executor"
+	"rygel/services/ledger"
 )
 
 type StatementExecutor struct {
@@ -12,7 +13,8 @@ type StatementExecutor struct {
 }
 
 func (service StatementExecutor) Execute(statement string) string {
-  command := commands.New(statement)
+  params := input_parser.Parse(statement)
+  command := commands.New(params)
   job := service.CommandExecutor.Enqueue(command)
 
   result := <- job.ResultChan
