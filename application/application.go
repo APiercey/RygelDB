@@ -2,11 +2,11 @@ package application
 
 import (
 	"rygel/core"
-	"rygel/services"
+	sx "rygel/application_services/statement_executor"
+	sr "rygel/application_services/statement_replay"
+	ba "rygel/services/basic_auth"
 	cx "rygel/services/command_executor"
-	sx "rygel/services/statement_executor"
-	sr "rygel/services/statement_replay"
-  "rygel/services/ledger"
+  "rygel/infrastructure/ledger"
 	"rygel/services/job"
 	"flag"
   "os"
@@ -14,7 +14,7 @@ import (
 
 type Application struct {
   Store core.Store
-  BasicAuthService services.BasicAuthService
+  BasicAuth ba.BasicAuth
   StatementExecutor sx.StatementExecutor
   CommandExecutor cx.CommandExecutor
   StatementReplay sr.StatementReplay
@@ -27,7 +27,7 @@ func New() Application {
 
   store := core.BuildStore()
 
-  basicAuthService := services.BasicAuthService{
+  basicAuth := ba.BasicAuth{
     ConfiguredUsername: *configuredUsername,
     ConfiguredPassword: *configuredPassword,
   }
@@ -55,7 +55,7 @@ func New() Application {
 
   return Application{
     Store: store,
-    BasicAuthService: basicAuthService,
+    BasicAuth: basicAuth,
     StatementExecutor: statementExecutor,
     CommandExecutor: &commandExecutor,
     StatementReplay: statementReplay,

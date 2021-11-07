@@ -5,7 +5,7 @@ import (
 
 	"rygel/core"
 	cx "rygel/services/command_executor"
-	"rygel/services/ledger"
+	"rygel/infrastructure/ledger"
 )
 
 func setupService() StatementExecutor {

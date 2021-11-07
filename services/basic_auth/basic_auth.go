@@ -1,4 +1,4 @@
-package services
+package basic_auth
 
 import (
 	"bufio"
@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-type BasicAuthService struct {
+type BasicAuth struct {
   ConfiguredUsername string
   ConfiguredPassword string
 }
@@ -33,7 +33,7 @@ func extractCreds(credsKV string) map[string]string {
   return foundCreds
 }
 
-func (service BasicAuthService) getCredentials(conn net.Conn) (username string, password string, err error) {
+func (service BasicAuth) getCredentials(conn net.Conn) (username string, password string, err error) {
     buffer, err := bufio.NewReader(conn).ReadBytes('\n')
 
     if err != nil { return "", "", errors.New("Connection lost") }
@@ -43,7 +43,7 @@ func (service BasicAuthService) getCredentials(conn net.Conn) (username string, 
     return creds["user"], creds["pass"], nil
 }
 
-func (service BasicAuthService) Authenticate(conn net.Conn) bool {
+func (service BasicAuth) Authenticate(conn net.Conn) bool {
   username, password, err := service.getCredentials(conn)
 
   if err != nil {

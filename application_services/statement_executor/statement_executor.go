@@ -4,7 +4,7 @@ import (
 	"rygel/commands"
 	"rygel/input_parser"
 	"rygel/services/command_executor"
-	"rygel/services/ledger"
+	"rygel/infrastructure/ledger"
 )
 
 type StatementExecutor struct {

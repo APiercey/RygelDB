@@ -4,7 +4,7 @@ import (
 	"rygel/commands"
 	"rygel/services/command_executor"
   "rygel/input_parser"
-	"rygel/services/ledger"
+	"rygel/infrastructure/ledger"
 )
 
 type StatementReplay struct {

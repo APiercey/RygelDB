@@ -5,13 +5,13 @@ import (
 	"fmt"
 	"net"
 
-	"rygel/servers"
+	"rygel/infrastructure/socket_server"
 	"rygel/application"
 )
 
 func buildConnectionHandler(application *application.Application) func(conn net.Conn) {
   return func(conn net.Conn) {
-    if !application.BasicAuthService.Authenticate(conn) {
+    if !application.BasicAuth.Authenticate(conn) {
       conn.Write([]byte("Could not authenticate"))
       conn.Close()
       return
@@ -44,5 +44,5 @@ func main() {
     &application,
   )
 
-  servers.StartSocketServer(connectionHandler)
+  socket_server.StartSocketServer(connectionHandler)
 }

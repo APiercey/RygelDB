@@ -1,4 +1,4 @@
-# RygelDB
+RygelDB
 [RygelDB](https://github.com/APiercey/RygelDB) is a NoSQL document store using commands to store and query documents!
 
 <img src="https://raw.githubusercontent.com/APiercey/RygelDB/main/sparky.png">
@@ -194,9 +194,10 @@ They provide a number of different operators useful for these value types:
 - [x] Setup Dependency-Injection strcture for the application and tests
 - [x] Move away from writing entire store to a file on every change to a "ledger" based persistence.
 - [ ] Document project architecture and implementation.
-- [ ] Move project structure to the [Standard Go-Lang Layout](https://github.com/golang-standards/project-layout)
+- [ ] Possible move project structure to the [Standard Go-Lang Layout](https://github.com/golang-standards/project-layout) if it grows too much
 - [ ] Add Snapshotting to Persistence Ledgers.
 - [ ] Add Indices/quick key lookups for nested data structures.
+- [ ] Allow SocketServer to be configurable (e.g. change port binding)
 
 ---
 
