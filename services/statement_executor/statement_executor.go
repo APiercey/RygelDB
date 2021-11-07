@@ -2,7 +2,6 @@ package statement_executor
 
 import (
   "rygel/commands" 
-  "rygel/input_parser" 
   "rygel/services/command_executor"
   "rygel/services/ledger"
 )
@@ -13,9 +12,9 @@ type StatementExecutor struct {
 }
 
 func (service StatementExecutor) Execute(statement string) string {
-  cmdParameters := input_parser.Parse(statement)
-  command := commands.New(cmdParameters)
+  command := commands.New(statement)
   job := service.CommandExecutor.Enqueue(command)
+
   result := <- job.ResultChan
 
   if result.StoreWasUpdated() {

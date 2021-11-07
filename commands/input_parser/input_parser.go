@@ -2,7 +2,7 @@ package input_parser
 
 import (
 	"encoding/json"
-	cp "rygel/command_parameters"
+	cp "rygel/commands/command_parameters"
 )
 
 func Parse(input string) cp.CommandParameters {

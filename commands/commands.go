@@ -2,7 +2,7 @@ package commands
 
 import (
 	"rygel/core"
-	cp "rygel/command_parameters"
+	"rygel/commands/input_parser"
 	comp "rygel/comparisons"
 )
 
@@ -11,7 +11,9 @@ type Command interface {
   Valid() bool
 }
 
-func New(params cp.CommandParameters) Command {
+func New(input string) Command {
+	params := input_parser.Parse(input)
+
 	if params.Error != "" {
 		return noopErrorCommand{err: params.Error}
 	}
