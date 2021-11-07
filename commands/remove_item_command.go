@@ -42,7 +42,7 @@ func (c removeItemCommand) Execute(s *core.Store) (string, bool) {
   collection.ReplaceItems(keptItems)
   s.Collections[c.collectionName] = collection
 
-  return "Removed " + strconv.Itoa(numFoundItems) + " items", false
+  return "Removed " + strconv.Itoa(numFoundItems) + " items", true
 }
 
 func (c removeItemCommand) Valid() bool {

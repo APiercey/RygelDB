@@ -34,7 +34,7 @@ func (c updateItemCommand) Execute(s *core.Store) (string, bool) {
     }  
   }
 
-  return "Updated " + strconv.Itoa(numFoundItems) + " items", false
+  return "Updated " + strconv.Itoa(numFoundItems) + " items", true
 }
 
 func (c updateItemCommand) Valid() bool {
