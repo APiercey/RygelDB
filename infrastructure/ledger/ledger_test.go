@@ -6,23 +6,29 @@ import (
   "os"
 )
 
-func assertAppendRecord(t *testing.T, l Ledger) {
-  record := "this is a test record"
-  expected_result := []string{record}
+func assertAppendAndReplay(t *testing.T, l Ledger) {
+  first_record := "First Record"
+  second_record := "Second Record"
+  third_record := "Third Record"
 
-  l.AppendRecord(record)
+  l.AppendRecord(first_record)
+  l.ReplayRecords(func(line string) {})
+  l.AppendRecord(second_record)
+  l.ReplayRecords(func(line string) {})
+  l.AppendRecord(third_record)
 
   result := []string{}
 
   l.ReplayRecords(func(line string) { result = append(result, line) })
 
+  expected_result := []string{first_record, second_record, third_record}
   assert.Equal(t, expected_result, result)
 }
 
 func TestAppendingToInMemoryLedger(t *testing.T) {
   ledger := InMemoryLedger{}
 
-  assertAppendRecord(t, &ledger)
+  assertAppendAndReplay(t, &ledger)
 }
 
 func TestAppendingToOnDiskLedger(t *testing.T) {
@@ -39,6 +45,6 @@ func TestAppendingToOnDiskLedger(t *testing.T) {
     LedgerFile: f,
   }
 
-  assertAppendRecord(t, &ledger)
+  assertAppendAndReplay(t, &ledger)
 }
 
