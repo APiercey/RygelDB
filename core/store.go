@@ -52,31 +52,6 @@ func (s *Store) InsertItem(collectionName string, item Item) bool {
   return true
 }
 
-// func (s *Store) RemoveItem(collectionName string, key string) bool {
-//   collectionRef, err := s.referenceCollection(collectionName) 
-
-//   if err != nil {
-//     fmt.Println(err)
-//     return false
-//   }
-
-//   return collectionRef.RemoveItem(key)
-// }
-
-// func (s *Store) AddIndex(collectionName string, index Index) bool {
-//   collectionRef, err := s.referenceCollection(collectionName) 
-
-//   if err != nil {
-//     fmt.Println(err)
-//     return false
-//   }
-
-//   collectionRef.AddIndex(index)
-
-//   return true
-// }
-
-
 func BuildStore() Store {
   store := Store{Collections: map[string]Collection{}}
 

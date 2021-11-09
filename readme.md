@@ -190,7 +190,8 @@ They provide a number of different operators useful for these value types:
 - `<=` compares if value on path is less than or equal to the expected value.
 
 
-# TODOs / Wishlist
+# TODOs / Wishlist / Ideas
+- [x] Concurrency-safe with multiple connections
 - [x] Setup Dependency-Injection strcture for the application and tests
 - [x] Move away from writing entire store to a file on every change to a "ledger" based persistence.
 - [ ] Document project architecture and implementation.
@@ -198,6 +199,8 @@ They provide a number of different operators useful for these value types:
 - [ ] Add Snapshotting to Persistence Ledgers.
 - [ ] Add Indices/quick key lookups for nested data structures.
 - [ ] Allow SocketServer to be configurable (e.g. change port binding)
+- [ ] Allow for concurrent Read Operations between connections
+- [ ] Allow for concurrent Write Operations between connections
 
 ---
 
