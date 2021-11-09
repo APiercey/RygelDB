@@ -12,10 +12,6 @@ type fetchCommand struct {
   predicates comp.PredicateCollection
 }
 
-func (c fetchCommand) RawStatement() string {
-  return "";
-}
-
 func (c fetchCommand) candidateItems(s *core.Store) []core.Item {
   collection := s.Collections[c.collectionName]
   candidateItems := c.predicates.IndexedItems(collection)

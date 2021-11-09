@@ -13,10 +13,6 @@ type removeItemCommand struct {
   predicates comp.PredicateCollection
 }
 
-func (c removeItemCommand) RawStatement() string {
-  return "";
-}
-
 func (c removeItemCommand) Execute(s *core.Store) (string, bool) {
   numFoundItems := 0
 

@@ -8,10 +8,6 @@ type defineCollectionCommand struct {
   collectionName string
 }
 
-func (c defineCollectionCommand) RawStatement() string {
-  return "";
-}
-
 func (c defineCollectionCommand) Execute(s *core.Store) (string, bool) {
   if s.CreateCollection(c.collectionName) {
     return "OK", true
