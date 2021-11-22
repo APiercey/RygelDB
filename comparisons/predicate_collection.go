@@ -37,20 +37,6 @@ func (pc PredicateCollection) IsOverlapping(dp common.DataPath) bool {
 	return false
 }
 
-func (pc PredicateCollection) IndexedItems(collection core.Collection) []core.Item {
-  for _, index := range collection.Indices {
-    for _, predicate := range pc.predicates {
-      items := predicate.IndexedItems(index)
-
-      if len(items) > 0 {
-        return items
-      }
-    }
-  }
-
-  return []core.Item{}
-}
-
 func BuildPredicateCollection() PredicateCollection {
   return PredicateCollection{predicates: []Predicate{}}
 }

@@ -14,12 +14,7 @@ type FetchCommand struct {
 }
 
 func (c FetchCommand) candidateItems(s *core.Store) []core.Item {
-  collection := c.Store.Collections[c.CollectionName]
-  candidateItems := c.Predicates.IndexedItems(collection)
-
-  if len(candidateItems) > 0 {
-    return candidateItems
-  } 
+  collection := s.Collections[c.CollectionName]
 
   return collection.Items
 }

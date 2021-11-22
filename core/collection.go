@@ -3,7 +3,6 @@ package core
 type Collection struct {
   Name string
   Items []Item
-  Indices map[string]Index
 }
 
 func (c *Collection) InsertItem(item Item) bool {
@@ -14,20 +13,6 @@ func (c *Collection) InsertItem(item Item) bool {
 
 func (c *Collection) ReplaceItems(items []Item) {
   c.Items = items
-}
-
-func (c *Collection) AddIndex(index Index) {
-  c.Indices[index.DataPath.SerializedPath()] = index
-}
-
-func (c Collection) IndexedPaths() []string {
-  keys := make([]string, 0, len(c.Indices))
-
-  for k := range c.Indices {
-    keys = append(keys, k)
-  }
-
-  return keys
 }
 
 func BuildCollection(collectionName string) Collection {
