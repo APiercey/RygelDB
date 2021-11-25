@@ -18,6 +18,7 @@ type Application struct {
   StatementExecutor sx.StatementExecutor
   CommandExecutor cx.CommandExecutor
   StatementReplay sr.StatementReplay
+  Stores []core.Store
 }
 
 func New() Application {

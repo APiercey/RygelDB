@@ -6,10 +6,25 @@ import (
 
 type Item struct {
   Data common.Data
+  wasUpdated bool
+  flaggedToRemove bool
+}
+
+func (i Item) WasUpdated() bool {
+  return i.wasUpdated
+}
+
+func (i Item) ShouldRemove() bool {
+  return i.flaggedToRemove
+}
+
+func (i *Item) FlagToRemove() {
+  i.flaggedToRemove = true
 }
 
 func (i *Item) SetData(newData common.Data) {
   i.Data = newData
+  i.wasUpdated = true
 }
 
 func (i Item) PluckValueOnPath(dp common.DataPath) (interface{}, bool) {
@@ -35,5 +50,5 @@ func (i Item) PluckValueOnPath(dp common.DataPath) (interface{}, bool) {
 }
 
 func BuildItem(data common.Data) (Item, error) {
-  return Item{Data: data}, nil
+  return Item{Data: data, wasUpdated: false}, nil
 }
