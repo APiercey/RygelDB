@@ -7,6 +7,7 @@ import (
 
 	"rygel/infrastructure/socket_server"
 	"rygel/application"
+  "rygel/context"
 )
 
 func buildConnectionHandler(application *application.Application) func(conn net.Conn) {
@@ -17,6 +18,8 @@ func buildConnectionHandler(application *application.Application) func(conn net.
       return
     }
 
+    ctx := context.Context{SelectedStore: "prod"}
+
     for {
       buffer, err := bufio.NewReader(conn).ReadBytes('\n')
 
@@ -26,7 +29,7 @@ func buildConnectionHandler(application *application.Application) func(conn net.
         return
       }
 
-      result := application.StatementExecutor.Execute(string(buffer[:len(buffer)-1]))
+      result := application.StatementExecutor.Execute(ctx, string(buffer[:len(buffer)-1]))
 
       conn.Write([]byte(result))
     }
@@ -38,7 +41,7 @@ func main() {
 
   go func() { for { application.CommandExecutor.Process() } }()
 
-  application.StatementReplay.Replay()
+  application.StatementReplay.Replay(context.Context{SelectedStore: "prod"})
 
   connectionHandler := buildConnectionHandler(
     &application,

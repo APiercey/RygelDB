@@ -6,6 +6,7 @@ import (
 	"rygel/infrastructure/input_parser"
 	"rygel/infrastructure/ledger"
   "rygel/core"
+  "rygel/context"
 )
 
 type StatementExecutor struct {
@@ -15,9 +16,9 @@ type StatementExecutor struct {
   StoreRepo core.StoreRepo
 }
 
-func (service StatementExecutor) Execute(statement string) string {
+func (service StatementExecutor) Execute(ctx context.Context, statement string) string {
   params := input_parser.Parse(statement)
-  store := service.StoreRepo.FindByName("make dynamic later")
+  store := service.StoreRepo.FindByName(ctx.SelectedStore)
 
   command := service.CommandBuilder.Build(store, params)
 
