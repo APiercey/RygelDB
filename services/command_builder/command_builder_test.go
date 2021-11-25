@@ -4,7 +4,7 @@ import (
 	"testing"
 	"github.com/stretchr/testify/assert"
 
-	cp "rygel/commands/command_parameters"
+	cp "rygel/services/command_builder/command_parameters"
 	"rygel/commands"
 	"rygel/core"
 )

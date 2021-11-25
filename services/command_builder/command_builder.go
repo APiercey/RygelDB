@@ -4,7 +4,7 @@ import (
   "rygel/commands"
 	"rygel/core"
 	comp "rygel/comparisons"
-	cp "rygel/commands/command_parameters"
+	cp "rygel/services/command_builder/command_parameters"
 )
 
 type CommandBuilder struct {
