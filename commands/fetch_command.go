@@ -6,15 +6,16 @@ import (
 	"rygel/core"
 )
 
-type fetchCommand struct {
-  limit int
-  collectionName string
-  predicates comp.PredicateCollection
+type FetchCommand struct {
+  Store *core.Store
+  Limit int
+  CollectionName string
+  Predicates comp.PredicateCollection
 }
 
-func (c fetchCommand) candidateItems(s *core.Store) []core.Item {
-  collection := s.Collections[c.collectionName]
-  candidateItems := c.predicates.IndexedItems(collection)
+func (c FetchCommand) candidateItems(s *core.Store) []core.Item {
+  collection := c.Store.Collections[c.CollectionName]
+  candidateItems := c.Predicates.IndexedItems(collection)
 
   if len(candidateItems) > 0 {
     return candidateItems
@@ -23,15 +24,15 @@ func (c fetchCommand) candidateItems(s *core.Store) []core.Item {
   return collection.Items
 }
 
-func (c fetchCommand) Execute(s *core.Store) (string, bool) {
+func (c FetchCommand) Execute() (string, bool) {
   matchingDataOfItems := []map[string]interface{}{}
 
-  for _, item := range c.candidateItems(s) {
-    if len(matchingDataOfItems) == c.limit {
+  for _, item := range c.candidateItems(c.Store) {
+    if len(matchingDataOfItems) == c.Limit {
       break
     }
 
-    if c.predicates.SatisfiedBy(item) {
+    if c.Predicates.SatisfiedBy(item) {
       matchingDataOfItems = append(matchingDataOfItems, item.Data)
     }
   }
@@ -43,8 +44,8 @@ func (c fetchCommand) Execute(s *core.Store) (string, bool) {
   return string(out), false
 }
 
-func (c fetchCommand) Valid() bool {
-  if c.collectionName == "" {
+func (c FetchCommand) Valid() bool {
+  if c.CollectionName == "" {
     return false
   }
 

@@ -1,18 +1,14 @@
 package commands
 
-import (
-	"rygel/core"
-)
-
-type noopErrorCommand struct {
-  err string
+type NoopErrorCommand struct {
+  Err string
 }
 
-func (c noopErrorCommand) Execute(s *core.Store) (string, bool) {
-  return c.err, false
+func (c NoopErrorCommand) Execute() (string, bool) {
+  return c.Err, false
 }
 
-func (c noopErrorCommand) Valid() bool {
+func (c NoopErrorCommand) Valid() bool {
   return true
 }
 

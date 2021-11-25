@@ -3,19 +3,21 @@ package statement_executor
 import (
 	"testing"
 
-	"rygel/core"
 	cx "rygel/services/command_executor"
 	"rygel/infrastructure/ledger"
+	"rygel/core"
 )
 
 func setupService() StatementExecutor {
-  store := core.BuildStore()
-  commandExecutor := cx.SyncCommandExecutor{ Store: &store }
+  commandExecutor := cx.SyncCommandExecutor{ }
   ledger := ledger.InMemoryLedger{}
+  store := core.BuildStore()
+  storeRepo := core.StoreRepo{Store: &store}
 
   return StatementExecutor{
     CommandExecutor: &commandExecutor,
     Ledger: &ledger,
+    StoreRepo: storeRepo,
   }
 }
 

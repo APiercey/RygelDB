@@ -6,6 +6,7 @@ import (
 	sr "rygel/application_services/statement_replay"
 	ba "rygel/services/basic_auth"
 	cx "rygel/services/command_executor"
+	cb "rygel/services/command_builder"
   "rygel/infrastructure/ledger"
   "rygel/services/command_executor/job" 
 	"flag"
@@ -18,6 +19,7 @@ type Application struct {
   StatementExecutor sx.StatementExecutor
   CommandExecutor cx.CommandExecutor
   StatementReplay sr.StatementReplay
+  CommandBuilder cb.CommandBuilder
 }
 
 func New() Application {
@@ -33,7 +35,6 @@ func New() Application {
   }
 
   commandExecutor := cx.AsyncCommandExecutor{
-    Store: &store,
     JobQueue: make(chan job.Job),
   }
 
@@ -43,15 +44,23 @@ func New() Application {
     LedgerFile: f,
   }
 
+  storeRepo := core.StoreRepo{
+    Store: &store,
+  }
+
   statementExecutor := sx.StatementExecutor{
     CommandExecutor: &commandExecutor,
     Ledger: &ledger,
+    StoreRepo: storeRepo,
   }
 
   statementReplay := sr.StatementReplay{
     CommandExecutor: &commandExecutor,
     Ledger: &ledger,
+    StoreRepo: storeRepo,
   }
+
+  commandBuilder := cb.CommandBuilder{}
 
   return Application{
     Store: store,
@@ -59,5 +68,6 @@ func New() Application {
     StatementExecutor: statementExecutor,
     CommandExecutor: &commandExecutor,
     StatementReplay: statementReplay,
+    CommandBuilder: commandBuilder,
   }
 }
