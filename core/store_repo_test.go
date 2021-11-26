@@ -9,7 +9,7 @@ func setupRepo() StoreRepo {
   store2 := BuildStore("test2")
 
   storeRepo := StoreRepo{
-    Stores: []*Store{&store1, &store2},
+    Stores: []Store{store1, store2},
   }
 
   return storeRepo

@@ -45,7 +45,7 @@ func New() Application {
   }
 
   storeRepo := core.StoreRepo{
-    Stores: []*core.Store{&store},
+    Stores: []core.Store{store},
   }
 
   statementExecutor := sx.StatementExecutor{

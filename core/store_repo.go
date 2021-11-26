@@ -3,6 +3,7 @@ package core
 import (
   "os"
   "rygel/common"
+	"path/filepath"
 )
 
 type StoreRepo struct {
@@ -43,6 +44,20 @@ func (sr *StoreRepo) Create(name string) {
 }
 
 func InitializeFromDir(dir string) StoreRepo {
+  stores := []Store{}
 
-  return StoreRepo{Dir: dir}
+  err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
+    storeFile, err := os.OpenFile(path, os.O_RDWR, 0644)
+
+    var out []byte
+    storeFile.Read(out)
+
+    stores = append(stores, BuildStore(string(out)))
+
+    return nil
+  })
+
+  common.HandleErr(err)
+
+  return StoreRepo{Dir: dir, Stores: stores}
 }
