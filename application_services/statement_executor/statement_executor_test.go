@@ -16,8 +16,8 @@ func setupContext() context.Context {
 func setupService() StatementExecutor {
   commandExecutor := cx.SyncCommandExecutor{ }
   ledger := ledger.InMemoryLedger{}
-  store := core.BuildStore()
-  storeRepo := core.StoreRepo{Store: &store}
+  store := core.BuildStore("test")
+  storeRepo := core.StoreRepo{Stores: []*core.Store{&store}}
 
   return StatementExecutor{
     CommandExecutor: &commandExecutor,

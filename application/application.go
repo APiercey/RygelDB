@@ -27,7 +27,7 @@ func New() Application {
   configuredPassword := flag.String("password", "password", "Password, defaults to password")
   flag.Parse()
 
-  store := core.BuildStore()
+  store := core.BuildStore("prod")
 
   basicAuth := ba.BasicAuth{
     ConfiguredUsername: *configuredUsername,
@@ -45,7 +45,7 @@ func New() Application {
   }
 
   storeRepo := core.StoreRepo{
-    Store: &store,
+    Stores: []*core.Store{&store},
   }
 
   statementExecutor := sx.StatementExecutor{

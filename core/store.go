@@ -5,6 +5,7 @@ import (
 )
 
 type Store struct {
+  Name string
   Collections map[string]Collection
 }
 
@@ -52,8 +53,8 @@ func (s *Store) InsertItem(collectionName string, item Item) bool {
   return true
 }
 
-func BuildStore() Store {
-  store := Store{Collections: map[string]Collection{}}
+func BuildStore(name string) Store {
+  store := Store{Name: name, Collections: map[string]Collection{}}
 
   return store
 }

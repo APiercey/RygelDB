@@ -6,7 +6,7 @@ import (
 )
 
 func TestCreateCollection(t *testing.T) {
-  store := BuildStore()
+  store := BuildStore("test")
 
   if !store.CreateCollection("flowers") {
     t.Log("Could not create collection")
@@ -20,7 +20,7 @@ func TestCreateCollection(t *testing.T) {
 }
 
 func TestStoreInsertItem(t *testing.T) {
-  store := BuildStore()
+  store := BuildStore("test")
   store.CreateCollection("flowers")
 
   item, _ := BuildItem(common.Data{

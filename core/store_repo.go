@@ -1,12 +1,15 @@
 package core
 
-import (
-)
-
 type StoreRepo struct {
-  Store *Store
+  Stores []*Store
 }
 
 func (sr StoreRepo) FindByName(name string) *Store {
-  return sr.Store
+  for _, store := range sr.Stores {
+    if store.Name == name {
+      return store
+    }
+  }
+
+  panic("Could not find store")
 }
