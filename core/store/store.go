@@ -1,26 +1,27 @@
-package core
+package store
 
 import (
 	"fmt"
+  "rygel/core"
 )
 
 type Store struct {
   Name string
-  Collections map[string]Collection
+  Collections map[string]core.Collection
 }
 
-func (s *Store) referenceCollection(collectionName string) (*Collection, error) {
+func (s *Store) referenceCollection(collectionName string) (*core.Collection, error) {
   collection, ok := s.Collections[collectionName]
 
   if ok {
     return &collection, nil
   } else {
-    return &Collection{}, fmt.Errorf("Could not find collection")
+    return &core.Collection{}, fmt.Errorf("Could not find collection")
   }
 }
 
 func (s *Store) CreateCollection(collectionName string) bool {
-  s.Collections[collectionName] = BuildCollection(collectionName)
+  s.Collections[collectionName] = core.BuildCollection(collectionName)
   return true
 }
 
@@ -35,7 +36,7 @@ func (s *Store) UndefineCollection(collectionName string) bool {
   }
 }
 
-func (s *Store) InsertItem(collectionName string, item Item) bool {
+func (s *Store) InsertItem(collectionName string, item core.Item) bool {
   collection, present := s.Collections[collectionName]
 
   if !present {
@@ -54,7 +55,7 @@ func (s *Store) InsertItem(collectionName string, item Item) bool {
 }
 
 func BuildStore(name string) Store {
-  store := Store{Name: name, Collections: map[string]Collection{}}
+  store := Store{Name: name, Collections: map[string]core.Collection{}}
 
   return store
 }
