@@ -14,20 +14,14 @@ func (sr *InMemoryRepo) appendStore(store str.Store) {
 }
 
 func (sr InMemoryRepo) FindByName(name string) (foundStore *str.Store, err error) {
-  for _, store := range sr.Stores {
-    if store.Name == name {
-      return &store, nil
-    }
-  }
-
-  return nil, errors.New("Store not found")
+  return findByName(sr.Stores, name)
 }
 
 func (sr InMemoryRepo) Create(name string) (store *str.Store, err error) {
-  for _, _store := range sr.Stores {
-    if _store.Name == name {
-      return nil, errors.New("Store already exists")
-    }
+  _, err = findByName(sr.Stores, name)
+
+  if err != nil {
+    return nil, errors.New("Store already exists")
   }
 
   builtStore := str.BuildStore(name)
