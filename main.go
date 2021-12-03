@@ -41,6 +41,14 @@ func main() {
 
   go func() { for { application.CommandExecutor.Process() } }()
 
+  if _, err := application.StoreRepo.FindByName("prod"); err != nil {
+    _, err = application.StoreRepo.Create("prod")
+
+    if err != nil {
+      panic(err)
+    }
+  }
+
   application.StatementReplay.Replay(context.Context{SelectedStore: "prod"})
 
   connectionHandler := buildConnectionHandler(

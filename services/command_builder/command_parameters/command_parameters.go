@@ -8,6 +8,7 @@ import (
 type CommandParameters struct {
 	Operation string `json:"operation"`
 	CollectionName  string `json:"collection_name"`
+	StoreName string `json:"store_name"`
 	Limit int `json:"limit"`
 	WhereClauses []struct{
 		Path []string `json:"path"`

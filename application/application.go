@@ -36,7 +36,7 @@ func New() Application {
     JobQueue: make(chan job.Job),
   }
 
-  f, _ := os.OpenFile("./store.ledger", os.O_APPEND|os.O_RDWR|os.O_CREATE, 0644)
+  f, _ := os.OpenFile("/tmp/rygel-store/store.ledger", os.O_APPEND|os.O_RDWR|os.O_CREATE, 0644)
 
   ledger := ledger.OnDiskLedger{
     LedgerFile: f,

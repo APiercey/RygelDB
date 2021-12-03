@@ -8,7 +8,7 @@ import (
 )
 
 type CommandBuilder struct {
-
+	StoreRepo cs.StoreRepo
 }
 
 func (cb CommandBuilder) Build(store *cs.Store, params cp.CommandParameters) commands.Command {
@@ -17,6 +17,8 @@ func (cb CommandBuilder) Build(store *cs.Store, params cp.CommandParameters) com
 	}
 
 	switch params.Operation {
+	case "DEFINE STORE":
+		return commands.DefineStoreCommand{StoreName: params.StoreName, StoreRepo: cb.StoreRepo}
 	case "DEFINE COLLECTION":
 		return commands.DefineCollectionCommand{Store: store, CollectionName: params.CollectionName}
 	case "REMOVE COLLECTION":
