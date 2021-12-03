@@ -4,27 +4,29 @@ import (
 	"strconv"
 
 	"rygel/core"
+	cs "rygel/core/store"
 	comp "rygel/comparisons" 
 )
 
-type removeItemCommand struct {
-  collectionName string
-  limit int
-  predicates comp.PredicateCollection
+type RemoveItemCommand struct {
+  Store *cs.Store
+  CollectionName string
+  Limit int
+  Predicates comp.PredicateCollection
 }
 
-func (c removeItemCommand) Execute(s *core.Store) (string, bool) {
+func (c RemoveItemCommand) Execute() (string, bool) {
   numFoundItems := 0
 
   keptItems := []core.Item{}
-  for _, item := range s.Collections[c.collectionName].Items {
+  for _, item := range c.Store.Collections[c.CollectionName].Items {
     keep := true
 
-    if numFoundItems == c.limit {
+    if numFoundItems == c.Limit {
       keep = false
     }
 
-    if !c.predicates.SatisfiedBy(item) {
+    if !c.Predicates.SatisfiedBy(item) {
       keep = false
     }
 
@@ -34,15 +36,15 @@ func (c removeItemCommand) Execute(s *core.Store) (string, bool) {
     }
   }
 
-  collection := s.Collections[c.collectionName]
+  collection := c.Store.Collections[c.CollectionName]
   collection.ReplaceItems(keptItems)
-  s.Collections[c.collectionName] = collection
+  c.Store.Collections[c.CollectionName] = collection
 
   return "Removed " + strconv.Itoa(numFoundItems) + " items", true
 }
 
-func (c removeItemCommand) Valid() bool {
-  if c.collectionName == "" {
+func (c RemoveItemCommand) Valid() bool {
+  if c.CollectionName == "" {
     return false
   }
 

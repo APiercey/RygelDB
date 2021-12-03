@@ -3,27 +3,36 @@ package statement_executor
 import (
 	"testing"
 
-	"rygel/core"
 	cx "rygel/services/command_executor"
 	"rygel/infrastructure/ledger"
+	cs "rygel/core/store"
+	sr "rygel/core/store_repo"
+	"rygel/context"
 )
 
+func setupContext() context.Context {
+  return context.Context{SelectedStore: "test"}
+}
+
 func setupService() StatementExecutor {
-  store := core.BuildStore()
-  commandExecutor := cx.SyncCommandExecutor{ Store: &store }
+  commandExecutor := cx.SyncCommandExecutor{ }
   ledger := ledger.InMemoryLedger{}
+  store := cs.BuildStore("test")
+  storeRepo := sr.InMemoryRepo{Stores: []cs.Store{store}}
 
   return StatementExecutor{
     CommandExecutor: &commandExecutor,
     Ledger: &ledger,
+    StoreRepo: storeRepo,
   }
 }
 
 func TestDefineCollection(t *testing.T) {
   serv := setupService()
+  ctx := setupContext()
   expected := "OK"
 
-  result := serv.Execute(`
+  result := serv.Execute(ctx, `
     { "operation": "DEFINE COLLECTION", "collection_name": "test_collection" }
   `)
 
@@ -36,10 +45,11 @@ func TestDefineCollection(t *testing.T) {
 
 func TestRemoveCollection(t *testing.T) {
   serv := setupService()
+  ctx := setupContext()
   expected := "OK"
 
-  serv.Execute(`{ "operation": "DEFINE COLLECTION", "collection_name": "test_collection" } `)
-  result := serv.Execute(`{ "operation": "REMOVE COLLECTION", "collection_name": "test_collection" } `)
+  serv.Execute(ctx, `{ "operation": "DEFINE COLLECTION", "collection_name": "test_collection" } `)
+  result := serv.Execute(ctx, `{ "operation": "REMOVE COLLECTION", "collection_name": "test_collection" } `)
 
   if result != expected {
     t.Log("Expected: ", expected)
@@ -50,10 +60,11 @@ func TestRemoveCollection(t *testing.T) {
 
 func TestInsertItem(t *testing.T) {
   serv := setupService()
+  ctx := setupContext()
   expected := "OK"
 
-  serv.Execute(`{ "operation": "DEFINE COLLECTION", "collection_name": "test_collection" } `)
-  result := serv.Execute(`{ 
+  serv.Execute(ctx, `{ "operation": "DEFINE COLLECTION", "collection_name": "test_collection" } `)
+  result := serv.Execute(ctx, `{ 
     "operation": "STORE",
     "collection_name": "test_collection",
     "data": {"foo": "bar"}
@@ -68,22 +79,23 @@ func TestInsertItem(t *testing.T) {
 
 func TestRemoveSingleItem(t *testing.T) {
   serv := setupService()
+  ctx := setupContext()
 
-  serv.Execute(`{
+  serv.Execute(ctx, `{
     "operation": "DEFINE COLLECTION",
     "collection_name": "test_collection"
   }`)
-  serv.Execute(`{ 
+  serv.Execute(ctx, `{ 
     "operation": "STORE",
     "collection_name": "test_collection",
     "data": {"foo": "bar"}
   }`)
-  serv.Execute(`{ 
+  serv.Execute(ctx, `{ 
     "operation": "STORE",
     "collection_name": "test_collection",
     "data": {"foo": "bar", "key": "test_item"}
   }`)
-  result := serv.Execute(`{ 
+  result := serv.Execute(ctx, `{ 
     "operation": "REMOVE ITEMS",
     "collection_name": "test_collection",
     "limit": 1
@@ -94,23 +106,24 @@ func TestRemoveSingleItem(t *testing.T) {
 
 func TestRemovedItemsNotRetreivable(t *testing.T) {
   serv := setupService()
+  ctx := setupContext()
   expected := `[{"foo":"bar"}]`
 
-  serv.Execute(`{
+  serv.Execute(ctx, `{
     "operation": "DEFINE COLLECTION",
     "collection_name": "test_collection"
   }`)
-  serv.Execute(`{ 
+  serv.Execute(ctx, `{ 
     "operation": "STORE",
     "collection_name": "test_collection",
     "data": {"foo": "bar"}
   }`)
-  serv.Execute(`{ 
+  serv.Execute(ctx, `{ 
     "operation": "REMOVE ITEMS",
     "collection_name": "test_collection",
     "limit": 1
   }`)
-  result := serv.Execute(`{ 
+  result := serv.Execute(ctx, `{ 
     "operation": "FETCH",
     "collection_name": "test_collection",
     "limit": 1
@@ -125,23 +138,24 @@ func TestRemovedItemsNotRetreivable(t *testing.T) {
 
 func TestFetchSingleItem(t *testing.T) {
   serv := setupService()
+  ctx := setupContext()
   expected := `[{"foo":"bar"}]`
 
-  serv.Execute(`{
+  serv.Execute(ctx, `{
     "operation": "DEFINE COLLECTION",
     "collection_name": "test_collection"
   }`)
-  serv.Execute(`{ 
+  serv.Execute(ctx, `{ 
     "operation": "STORE",
     "collection_name": "test_collection",
     "data": {"foo": "bar"}
   }`)
-  serv.Execute(`{ 
+  serv.Execute(ctx, `{ 
     "operation": "STORE",
     "collection_name": "test_collection",
     "data": {"pow": "blam"}
   }`)
-  result := serv.Execute(`{ 
+  result := serv.Execute(ctx, `{ 
     "operation": "FETCH",
     "collection_name": "test_collection",
     "limit": 1
@@ -156,23 +170,24 @@ func TestFetchSingleItem(t *testing.T) {
 
 func TestFetchItemWithEqualsWhereClause(t *testing.T) {
   serv := setupService()
+  ctx := setupContext()
   expected := `[{"foo":"bar","some":{"nested":{"path":"Hello World"}}}]`
 
-  serv.Execute(`{
+  serv.Execute(ctx, `{
     "operation": "DEFINE COLLECTION",
     "collection_name": "test_collection"
   }`)
-  serv.Execute(`{ 
+  serv.Execute(ctx, `{ 
     "operation": "STORE",
     "collection_name": "test_collection",
     "data": {"should not": "fetch"}
   }`)
-  serv.Execute(`{ 
+  serv.Execute(ctx, `{ 
     "operation": "STORE",
     "collection_name": "test_collection",
     "data": {"foo": "bar", "some": {"nested": {"path": "Hello World"}}}
   }`)
-  result := serv.Execute(`{ 
+  result := serv.Execute(ctx, `{ 
     "operation": "FETCH",
     "collection_name": "test_collection",
     "limit": 1,
@@ -190,23 +205,24 @@ func TestFetchItemWithEqualsWhereClause(t *testing.T) {
 
 func TestFetchItemWithGreaterThanWhereClause(t *testing.T) {
   serv := setupService()
+  ctx := setupContext()
   expected := `[{"foo":"bar","my_num":23}]`
 
-  serv.Execute(`{
+  serv.Execute(ctx, `{
     "operation": "DEFINE COLLECTION",
     "collection_name": "test_collection"
   }`)
-  serv.Execute(`{ 
+  serv.Execute(ctx, `{ 
     "operation": "STORE",
     "collection_name": "test_collection",
     "data": {"should not": "fetch"}
   }`)
-  serv.Execute(`{ 
+  serv.Execute(ctx, `{ 
     "operation": "STORE",
     "collection_name": "test_collection",
     "data": {"foo": "bar", "my_num": 23}
   }`)
-  result := serv.Execute(`{ 
+  result := serv.Execute(ctx, `{ 
     "operation": "FETCH",
     "collection_name": "test_collection",
     "limit": 1,
@@ -224,28 +240,29 @@ func TestFetchItemWithGreaterThanWhereClause(t *testing.T) {
 
 func TestFetchItemsMultipleWhereClause(t *testing.T) {
   serv := setupService()
+  ctx := setupContext()
   expected := `[{"health":50,"match":"me"},{"health":99,"match":"me"}]`
 
-  serv.Execute(`{
+  serv.Execute(ctx, `{
     "operation": "DEFINE COLLECTION",
     "collection_name": "test_collection"
   }`)
-  serv.Execute(`{ 
+  serv.Execute(ctx, `{ 
     "operation": "STORE",
     "collection_name": "test_collection",
     "data": {"health": 50, "match":"me"}
   }`)
-  serv.Execute(`{ 
+  serv.Execute(ctx, `{ 
     "operation": "STORE",
     "collection_name": "test_collection",
     "data": {"health": 99, "match":"me"}
   }`)
-  serv.Execute(`{ 
+  serv.Execute(ctx, `{ 
     "operation": "STORE",
     "collection_name": "test_collection",
     "data": {"foo": "choo", "match":"me"}
   }`)
-  result := serv.Execute(`{ 
+  result := serv.Execute(ctx, `{ 
     "operation": "FETCH",
     "collection_name": "test_collection",
     "where": [
@@ -263,17 +280,18 @@ func TestFetchItemsMultipleWhereClause(t *testing.T) {
 
 func TestUpdateItem(t *testing.T) {
   serv := setupService()
+  ctx := setupContext()
 
-  serv.Execute(`{
+  serv.Execute(ctx, `{
     "operation": "DEFINE COLLECTION",
     "collection_name": "test_collection"
   }`)
-  serv.Execute(`{ 
+  serv.Execute(ctx, `{ 
     "operation": "STORE",
     "collection_name": "test_collection",
     "data": {"foo": "bar"}
   }`)
-  updateResult := serv.Execute(`{ 
+  updateResult := serv.Execute(ctx, `{ 
     "operation": "UPDATE ITEM",
     "collection_name": "test_collection",
     "data": {"foo": "new value"}
@@ -281,7 +299,7 @@ func TestUpdateItem(t *testing.T) {
 
   if updateResult != "Updated 1 items" { t.Error("Command does not work", updateResult) }
 
-  fetchResult := serv.Execute(`{ 
+  fetchResult := serv.Execute(ctx, `{ 
     "operation": "FETCH",
     "collection_name": "test_collection",
     "limit": 1,

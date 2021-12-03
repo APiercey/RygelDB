@@ -1,8 +1,9 @@
 package input_parser
 
+// NOTE: Should this be apart of command_parameters?
 import (
 	"encoding/json"
-	cp "rygel/commands/command_parameters"
+	cp "rygel/services/command_builder/command_parameters"
 )
 
 func Parse(input string) cp.CommandParameters {

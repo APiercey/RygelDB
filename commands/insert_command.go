@@ -2,22 +2,24 @@ package commands
 
 import (
 	"rygel/core"
+	cs "rygel/core/store"
 	"rygel/common"
 )
 
-type insertCommand struct {
-  collectionName string
-  data common.Data
+type InsertCommand struct {
+  Store *cs.Store
+  CollectionName string
+  Data common.Data
 }
 
-func (c insertCommand) Execute(s *core.Store) (string, bool) {
-  item, err := core.BuildItem(c.data)
+func (c InsertCommand) Execute() (string, bool) {
+  item, err := core.BuildItem(c.Data)
 
   if err != nil {
     return err.Error(), false
   }
 
-  result := s.InsertItem(c.collectionName, item)
+  result := c.Store.InsertItem(c.CollectionName, item)
 
   if result {
     return "OK", true
@@ -26,12 +28,12 @@ func (c insertCommand) Execute(s *core.Store) (string, bool) {
   }
 }
 
-func (c insertCommand) Valid() bool {
-  if c.collectionName == "" {
+func (c InsertCommand) Valid() bool {
+  if c.CollectionName == "" {
     return false
   }
 
-  if len(c.data) == 0 {
+  if len(c.Data) == 0 {
     return false
   }
 

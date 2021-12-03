@@ -1,22 +1,23 @@
 package commands
 
 import (
-  "rygel/core" 
+  cs "rygel/core/store" 
 )
 
-type removeCollectionCommand struct {
-  collectionName string
+type RemoveCollectionCommand struct {
+  Store *cs.Store
+  CollectionName string
 }
 
-func (c removeCollectionCommand) Execute(s *core.Store) (string, bool) {
-  if s.UndefineCollection(c.collectionName) {
+func (c RemoveCollectionCommand) Execute() (string, bool) {
+  if c.Store.UndefineCollection(c.CollectionName) {
     return "OK", true
   } else {
     return "ERR Could not undefine collection", false
   }
 }
-func (c removeCollectionCommand) Valid() bool {
-  if c.collectionName == "" {
+func (c RemoveCollectionCommand) Valid() bool {
+  if c.CollectionName == "" {
     return false
   }
 
