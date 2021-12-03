@@ -1,4 +1,4 @@
-package store
+package store_repo
 
 import (
   "os"
@@ -7,14 +7,19 @@ import (
   "errors"
   "io/ioutil"
   "strings"
+  str "rygel/core/store"
 )
 
-type StoreRepo struct {
+type FileSystemRepo struct {
   Dir string
-  Stores []Store
+  Stores []str.Store
 }
 
-func (sr StoreRepo) FindByName(name string) (store *Store, err error) {
+func (sr *FileSystemRepo) appendStore(store str.Store) {
+  sr.Stores = append(sr.Stores, store)
+}
+
+func (sr FileSystemRepo) FindByName(name string) (foundStore *str.Store, err error) {
   for _, store := range sr.Stores {
     if store.Name == name {
       return &store, nil
@@ -25,9 +30,9 @@ func (sr StoreRepo) FindByName(name string) (store *Store, err error) {
   return nil, errors.New("Store not found")
 }
 
-func (sr *StoreRepo) Create(name string) (store *Store, err error) {
-  for _, store := range sr.Stores {
-    if store.Name == name {
+func (sr FileSystemRepo) Create(name string) (store *str.Store, err error) {
+  for _, _store := range sr.Stores {
+    if _store.Name == name {
       return nil, errors.New("Store already exists")
     }
   }
@@ -39,18 +44,15 @@ func (sr *StoreRepo) Create(name string) (store *Store, err error) {
   common.HandleErr(err)
 
   _, err2 := f.WriteString(name + "\n")
-
   common.HandleErr(err2)
+  builtStore := str.BuildStore(name)
+  sr.appendStore(builtStore)
 
-  newStore := BuildStore(name)
-
-  sr.Stores = append(sr.Stores, newStore)
-
-  return &newStore, nil
+  return &builtStore, nil
 }
 
 func InitializeFromDir(dir string) StoreRepo {
-  stores := []Store{}
+  stores := []str.Store{}
 
   if _, err := os.Stat(dir); os.IsNotExist(err) { 
     os.MkdirAll(dir, 0700) 
@@ -62,17 +64,14 @@ func InitializeFromDir(dir string) StoreRepo {
     }
 
     out, err := ioutil.ReadFile(path)
-
     common.HandleErr(err)
-
     name := strings.TrimRight(string(out), "\n")
-
-    stores = append(stores, BuildStore(name))
+    stores = append(stores, str.BuildStore(name))
 
     return nil
   })
 
   common.HandleErr(err)
 
-  return StoreRepo{Dir: dir, Stores: stores}
+  return FileSystemRepo{Dir: dir, Stores: stores}
 }

@@ -1,11 +1,11 @@
 package commands
 
 import (
-  cs "rygel/core/store" 
+  sr "rygel/core/store_repo" 
 )
 
 type DefineStoreCommand struct {
-  StoreRepo cs.StoreRepo
+  StoreRepo sr.StoreRepo
   StoreName string
 }
 

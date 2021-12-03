@@ -1,7 +1,7 @@
 package statement_replay
 
 import (
-  cs "rygel/core/store"
+  sr "rygel/core/store_repo"
 	"rygel/services/command_executor"
   "rygel/infrastructure/input_parser"
 	"rygel/infrastructure/ledger"
@@ -14,7 +14,7 @@ type StatementReplay struct {
   Ledger ledger.Ledger
   CommandExecutor command_executor.CommandExecutor
   CommandBuilder command_builder.CommandBuilder
-  StoreRepo cs.StoreRepo
+  StoreRepo sr.StoreRepo
 }
 
 func (service StatementReplay) Replay(ctx context.Context) {

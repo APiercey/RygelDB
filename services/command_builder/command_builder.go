@@ -3,12 +3,13 @@ package command_builder
 import (
   "rygel/commands"
 	cs "rygel/core/store"
+	cr "rygel/core/store_repo"
 	comp "rygel/comparisons"
 	cp "rygel/services/command_builder/command_parameters"
 )
 
 type CommandBuilder struct {
-	StoreRepo cs.StoreRepo
+	StoreRepo cr.StoreRepo
 }
 
 func (cb CommandBuilder) Build(store *cs.Store, params cp.CommandParameters) commands.Command {

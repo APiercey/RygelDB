@@ -1,7 +1,7 @@
 package application
 
 import (
-	cs "rygel/core/store"
+	"rygel/core/store_repo"
 	sx "rygel/application_services/statement_executor"
 	sr "rygel/application_services/statement_replay"
 	ba "rygel/services/basic_auth"
@@ -14,7 +14,7 @@ import (
 )
 
 type Application struct {
-  StoreRepo cs.StoreRepo
+  StoreRepo store_repo.StoreRepo
   BasicAuth ba.BasicAuth
   StatementExecutor sx.StatementExecutor
   CommandExecutor cx.CommandExecutor
@@ -42,7 +42,7 @@ func New() Application {
     LedgerFile: f,
   }
 
-  storeRepo := cs.InitializeFromDir("/tmp/rygel-store")
+  storeRepo := store_repo.InitializeFromDir("/tmp/rygel-store")
 
   statementExecutor := sx.StatementExecutor{
     CommandExecutor: &commandExecutor,
