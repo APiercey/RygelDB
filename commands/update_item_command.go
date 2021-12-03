@@ -4,12 +4,12 @@ import (
 	"strconv"
 
 	comp "rygel/comparisons"
-	"rygel/core"
+	cs "rygel/core/store"
 	"rygel/common"
 )
 
 type UpdateItemCommand struct {
-  Store *core.Store
+  Store *cs.Store
   CollectionName string
   Limit int
   Predicates comp.PredicateCollection

@@ -1,11 +1,11 @@
 package commands
 
 import (
-  "rygel/core" 
+  cs "rygel/core/store" 
 )
 
 type DefineCollectionCommand struct {
-  Store *core.Store
+  Store *cs.Store
   CollectionName string
 }
 

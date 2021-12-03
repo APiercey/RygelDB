@@ -2,11 +2,12 @@ package commands
 
 import (
 	"rygel/core"
+	cs "rygel/core/store"
 	"rygel/common"
 )
 
 type InsertCommand struct {
-  Store *core.Store
+  Store *cs.Store
   CollectionName string
   Data common.Data
 }

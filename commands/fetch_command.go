@@ -3,17 +3,18 @@ package commands
 import (
 	"encoding/json"
 	comp "rygel/comparisons"
+	cs "rygel/core/store"
 	"rygel/core"
 )
 
 type FetchCommand struct {
-  Store *core.Store
+  Store *cs.Store
   Limit int
   CollectionName string
   Predicates comp.PredicateCollection
 }
 
-func (c FetchCommand) candidateItems(s *core.Store) []core.Item {
+func (c FetchCommand) candidateItems(s *cs.Store) []core.Item {
   collection := s.Collections[c.CollectionName]
 
   return collection.Items

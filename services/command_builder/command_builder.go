@@ -2,7 +2,7 @@ package command_builder
 
 import (
   "rygel/commands"
-	"rygel/core"
+	cs "rygel/core/store"
 	comp "rygel/comparisons"
 	cp "rygel/services/command_builder/command_parameters"
 )
@@ -11,7 +11,7 @@ type CommandBuilder struct {
 
 }
 
-func (cb CommandBuilder) Build(store *core.Store, params cp.CommandParameters) commands.Command {
+func (cb CommandBuilder) Build(store *cs.Store, params cp.CommandParameters) commands.Command {
 	if params.Error != "" {
 		return commands.NoopErrorCommand{Err: params.Error}
 	}

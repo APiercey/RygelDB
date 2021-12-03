@@ -1,7 +1,7 @@
 package application
 
 import (
-	"rygel/core"
+	cs "rygel/core/store"
 	sx "rygel/application_services/statement_executor"
 	sr "rygel/application_services/statement_replay"
 	ba "rygel/services/basic_auth"
@@ -14,7 +14,7 @@ import (
 )
 
 type Application struct {
-  Store core.Store
+  StoreRepo cs.StoreRepo
   BasicAuth ba.BasicAuth
   StatementExecutor sx.StatementExecutor
   CommandExecutor cx.CommandExecutor
@@ -26,8 +26,6 @@ func New() Application {
   configuredUsername := flag.String("username", "root", "Username, defaults to root")
   configuredPassword := flag.String("password", "password", "Password, defaults to password")
   flag.Parse()
-
-  store := core.BuildStore("prod")
 
   basicAuth := ba.BasicAuth{
     ConfiguredUsername: *configuredUsername,
@@ -44,9 +42,7 @@ func New() Application {
     LedgerFile: f,
   }
 
-  storeRepo := core.StoreRepo{
-    Stores: []core.Store{store},
-  }
+  storeRepo := cs.InitializeFromDir("/tmp/rygel-store")
 
   statementExecutor := sx.StatementExecutor{
     CommandExecutor: &commandExecutor,
@@ -63,7 +59,7 @@ func New() Application {
   commandBuilder := cb.CommandBuilder{}
 
   return Application{
-    Store: store,
+    StoreRepo: storeRepo,
     BasicAuth: basicAuth,
     StatementExecutor: statementExecutor,
     CommandExecutor: &commandExecutor,

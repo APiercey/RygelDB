@@ -5,7 +5,8 @@ import (
 	"rygel/services/command_executor"
 	"rygel/infrastructure/input_parser"
 	"rygel/infrastructure/ledger"
-  "rygel/core"
+  cs "rygel/core/store"
+  "rygel/common"
   "rygel/context"
 )
 
@@ -13,12 +14,14 @@ type StatementExecutor struct {
   CommandExecutor command_executor.CommandExecutor
   CommandBuilder command_builder.CommandBuilder
   Ledger ledger.Ledger
-  StoreRepo core.StoreRepo
+  StoreRepo cs.StoreRepo
 }
 
 func (service StatementExecutor) Execute(ctx context.Context, statement string) string {
   params := input_parser.Parse(statement)
-  store := service.StoreRepo.FindByName(ctx.SelectedStore)
+  store, err := service.StoreRepo.FindByName(ctx.SelectedStore)
+
+  common.HandleErr(err)
 
   command := service.CommandBuilder.Build(store, params)
 

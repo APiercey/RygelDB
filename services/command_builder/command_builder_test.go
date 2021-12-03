@@ -6,7 +6,7 @@ import (
 
 	cp "rygel/services/command_builder/command_parameters"
 	"rygel/commands"
-	"rygel/core"
+	cs "rygel/core/store"
 )
 
 func setup() CommandBuilder {
@@ -15,7 +15,7 @@ func setup() CommandBuilder {
 
 func TestReturnsDefineCollection(t *testing.T) {
 	cb := setup()
-	store := core.Store{}
+	store := cs.Store{}
 	params := cp.New()
 	params.Operation = "DEFINE COLLECTION"
 	cmd := cb.Build(&store, params)
@@ -25,7 +25,7 @@ func TestReturnsDefineCollection(t *testing.T) {
 
 func TestReturnsRemoveCollection(t *testing.T) {
 	cb := setup()
-	store := core.Store{}
+	store := cs.Store{}
 	params := cp.New()
 	params.Operation = "REMOVE COLLECTION"
 	cmd := cb.Build(&store, params)
@@ -35,7 +35,7 @@ func TestReturnsRemoveCollection(t *testing.T) {
 
 func TestReturnsRemoveItems(t *testing.T) {
 	cb := setup()
-	store := core.Store{}
+	store := cs.Store{}
 	params := cp.New()
 	params.Operation = "REMOVE ITEMS"
 	cmd := cb.Build(&store, params)
@@ -45,7 +45,7 @@ func TestReturnsRemoveItems(t *testing.T) {
 
 func TestReturnsInsert(t *testing.T) {
 	cb := setup()
-	store := core.Store{}
+	store := cs.Store{}
 	params := cp.New()
 	params.Operation = "STORE"
 	cmd := cb.Build(&store, params)
@@ -55,7 +55,7 @@ func TestReturnsInsert(t *testing.T) {
 
 func TestReturnsFetch(t *testing.T) {
 	cb := setup()
-	store := core.Store{}
+	store := cs.Store{}
 	params := cp.New()
 	params.Operation = "FETCH"
 	cmd := cb.Build(&store, params)
@@ -65,7 +65,7 @@ func TestReturnsFetch(t *testing.T) {
 
 func TestReturnsUpdate(t *testing.T) {
 	cb := setup()
-	store := core.Store{}
+	store := cs.Store{}
 	params := cp.New()
 	params.Operation = "UPDATE ITEM"
 	cmd := cb.Build(&store, params)
@@ -75,7 +75,7 @@ func TestReturnsUpdate(t *testing.T) {
 
 func TestReturnsNoopError(t *testing.T) {
 	cb := setup()
-	store := core.Store{}
+	store := cs.Store{}
 	params := cp.New()
 	params.Operation = "DOES NOT EXIST"
 	cmd := cb.Build(&store, params)
@@ -85,7 +85,7 @@ func TestReturnsNoopError(t *testing.T) {
 
 func TestWithError(t *testing.T) {
 	cb := setup()
-	store := core.Store{}
+	store := cs.Store{}
 	params := cp.New()
 	params.Operation = "DEFINE COLLECTION"
 	params.Error = "Something wrong with input"

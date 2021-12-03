@@ -4,11 +4,12 @@ import (
 	"strconv"
 
 	"rygel/core"
+	cs "rygel/core/store"
 	comp "rygel/comparisons" 
 )
 
 type RemoveItemCommand struct {
-  Store *core.Store
+  Store *cs.Store
   CollectionName string
   Limit int
   Predicates comp.PredicateCollection

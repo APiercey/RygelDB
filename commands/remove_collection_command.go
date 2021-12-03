@@ -1,11 +1,11 @@
 package commands
 
 import (
-  "rygel/core" 
+  cs "rygel/core/store" 
 )
 
 type RemoveCollectionCommand struct {
-  Store *core.Store
+  Store *cs.Store
   CollectionName string
 }
 
