@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"net"
+  "time"
 
 	"rygel/infrastructure/socket_server"
 	"rygel/application"
@@ -39,7 +40,13 @@ func buildConnectionHandler(application *application.Application) func(conn net.
 func main() {
   application := application.New()
 
-  go func() { for { application.CommandExecutor.Process() } }()
+  go func() {
+    for {
+      if !application.CommandExecutor.Process() {
+        time.Sleep(300 * time.Millisecond)
+      }
+    }
+  }()
 
   if _, err := application.StoreRepo.FindByName("test"); err != nil {
     _, err = application.StoreRepo.Create("test")
