@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 	"rygel/core"
-  "io/ioutil"
 	"rygel/common"
 
 	coll "rygel/infrastructure/collection_persistence"
@@ -61,46 +60,12 @@ func (s *Store) InsertItem(collectionName string, item core.Item) bool {
   return true
 }
 
-func collectionPaths(dir string) []string {
-  dirs := []string{}
-
-  files, err := ioutil.ReadDir(dir)
-
-  common.HandleErr(err)
-
-  for _, file := range files {
-    if file.IsDir() {
-      dirs = append(dirs, file.Name())
-    }
-  }
-  
-  return dirs
-}
-
 func buildExistingCollections(storeDir string) map[string]coll.CollectionPersistence {
   collections := map[string]coll.CollectionPersistence{}
 
-  fmt.Println("####")
-  fmt.Println(storeDir)
-  fmt.Println("####")
-
-  collectionPaths := collectionPaths(storeDir)
-
-  for _, name := range collectionPaths {
+  for _, name := range common.CollectPathsInDir(storeDir) {
     collections[name] = coll.New(name, storeDir + "/" + name)
   }
-
-  // err := filepath.Walk(storeDir, func(path string, info os.FileInfo, err error) error {
-
-  //   // splits := strings.Split(path, "/")
-  //   // name := splits[len(splits)-1]
-
-  //   collections[name] = coll.New(name, path)
-
-  //   return nil
-  // })
-
-  // if err != nil { panic(err) }
 
   return collections
 }

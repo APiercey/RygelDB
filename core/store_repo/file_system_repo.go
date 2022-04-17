@@ -5,7 +5,6 @@ import (
   "os"
   "rygel/common"
   "errors"
-  "io/ioutil"
   str "rygel/core/store"
 )
 
@@ -50,22 +49,6 @@ func (sr FileSystemRepo) Create(name string) (store *str.Store, err error) {
   return &builtStore, nil
 }
 
-func storePaths(dir string) []string {
-  dirs := []string{}
-
-  files, err := ioutil.ReadDir(dir)
-
-  common.HandleErr(err)
-
-  for _, file := range files {
-    if file.IsDir() {
-      dirs = append(dirs, file.Name())
-    }
-  }
-  
-  return dirs
-}
-
 func InitializeFromDir(dir string) StoreRepo {
   stores := []str.Store{}
 
@@ -73,9 +56,7 @@ func InitializeFromDir(dir string) StoreRepo {
     os.MkdirAll(dir, 0700) 
   }
 
-  paths := storePaths(dir)
-
-  for _, name := range paths {
+  for _, name := range common.CollectPathsInDir(dir) {
     fmt.Println(name)
 
     stores = append(stores, str.BuildStore(name, dir + "/" + name))
