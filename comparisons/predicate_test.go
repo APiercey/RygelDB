@@ -14,7 +14,7 @@ func TestFilteringByEquals(t *testing.T) {
 
   predicate := Predicate{Path: common.DataPath{RealPath: []string{"test"}}, Operator: "=", Value: 1}
 
-  if !predicate.SatisfiedBy(item) {
+  if !predicate.SatisfiedBy(&item) {
     t.Log("= operator is broken")
     t.Fail()
   }
@@ -27,7 +27,7 @@ func TestFilteringByNotEquals(t *testing.T) {
 
   predicate := Predicate{Path: common.DataPath{RealPath: []string{"test"}}, Operator: "1=", Value: 2}
 
-  if predicate.SatisfiedBy(item) {
+  if predicate.SatisfiedBy(&item) {
     t.Log("> operator is broken")
     t.Fail()
   }
@@ -40,7 +40,7 @@ func TestFilteringByGreaterThan(t *testing.T) {
 
   predicate := Predicate{Path: common.DataPath{RealPath: []string{"test"}}, Operator: ">", Value: 0}
 
-  if predicate.SatisfiedBy(item) {
+  if predicate.SatisfiedBy(&item) {
     t.Log("> operator is broken")
     t.Fail()
   }
@@ -53,7 +53,7 @@ func TestFilteringByGreaterThanOrEquals(t *testing.T) {
 
   predicate := Predicate{Path: common.DataPath{RealPath: []string{"test"}}, Operator: ">=", Value: 1}
 
-  if predicate.SatisfiedBy(item) {
+  if predicate.SatisfiedBy(&item) {
     t.Log("> operator is broken")
     t.Fail()
   }
@@ -66,7 +66,7 @@ func TestFilteringByLessThan(t *testing.T) {
 
   predicate := Predicate{Path: common.DataPath{RealPath: []string{"test"}}, Operator: "<", Value: 2}
 
-  if predicate.SatisfiedBy(item) {
+  if predicate.SatisfiedBy(&item) {
     t.Log("> operator is broken")
     t.Fail()
   }
@@ -79,7 +79,7 @@ func TestFilteringByLessThanOrEquals(t *testing.T) {
 
   predicate := Predicate{Path: common.DataPath{RealPath: []string{"test"}}, Operator: "<=", Value: 1}
 
-  if predicate.SatisfiedBy(item) {
+  if predicate.SatisfiedBy(&item) {
     t.Log("> operator is broken")
     t.Fail()
   }

@@ -20,7 +20,7 @@ func (cp CollectionPersistence) Enumerate(f page.EnumFunction, useLock bool) {
   }
 }
 
-func (cp CollectionPersistence) InsertItem(item core.Item) {
+func (cp *CollectionPersistence) InsertItem(item core.Item) {
   page := cp.getLastPage()
   page.Append(item)
 }

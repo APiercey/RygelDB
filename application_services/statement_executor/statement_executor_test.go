@@ -1,24 +1,41 @@
 package statement_executor
 
 import (
-	"testing"
+  "testing"
+  "os"
 
-	cx "rygel/services/command_executor"
-	"rygel/infrastructure/ledger"
-	cs "rygel/core/store"
-	sr "rygel/core/store_repo"
-	"rygel/context"
+  cx "rygel/services/command_executor"
+  sr "rygel/core/store_repo"
+  "rygel/infrastructure/ledger"
+  "rygel/context"
 )
 
 func setupContext() context.Context {
   return context.Context{SelectedStore: "test"}
 }
 
-func setupService() StatementExecutor {
+func useTempStoreRepo(name string, f func(sr.StoreRepo)) {
+  tmpDir := "./tmp-test-store"
+
+  if err := os.MkdirAll(tmpDir, 0755); err != nil {
+    panic(err)
+  }
+
+  defer func() {
+    if err := os.RemoveAll(tmpDir); err != nil {
+      panic(err)
+    }
+  }()
+
+  storeRepo := sr.InitializeFromDir(tmpDir)
+  storeRepo.Create(name)
+
+  f(storeRepo)
+}
+
+func setupService(storeRepo sr.StoreRepo) StatementExecutor {
   commandExecutor := cx.SyncCommandExecutor{ }
   ledger := ledger.InMemoryLedger{}
-  store := cs.BuildStore("test")
-  storeRepo := sr.InMemoryRepo{Stores: []cs.Store{store}}
 
   return StatementExecutor{
     CommandExecutor: &commandExecutor,
@@ -28,44 +45,51 @@ func setupService() StatementExecutor {
 }
 
 func TestDefineCollection(t *testing.T) {
-  serv := setupService()
-  ctx := setupContext()
-  expected := "OK"
+  useTempStoreRepo("test", func(storeRepo sr.StoreRepo) {
+    serv := setupService(storeRepo)
+    ctx := setupContext()
+    expected := "OK"
 
-  result := serv.Execute(ctx, `
-    { "operation": "DEFINE COLLECTION", "collection_name": "test_collection" }
-  `)
+    result := serv.Execute(ctx, `
+{ "operation": "DEFINE COLLECTION", "collection_name": "test_collection" }
+    `)
 
-  if result != expected {
-    t.Log("Expected: ", expected)
-    t.Log("Received: ", result)
-    t.Fail()
-  }
+    if result != expected {
+      t.Log("Expected: ", expected)
+      t.Log("Received: ", result)
+      t.Fail()
+    }
+  })
 }
 
 func TestRemoveCollection(t *testing.T) {
-  serv := setupService()
-  ctx := setupContext()
-  expected := "OK"
+  useTempStoreRepo("test", func(storeRepo sr.StoreRepo) {
+    serv := setupService(storeRepo)
+    ctx := setupContext()
 
-  serv.Execute(ctx, `{ "operation": "DEFINE COLLECTION", "collection_name": "test_collection" } `)
-  result := serv.Execute(ctx, `{ "operation": "REMOVE COLLECTION", "collection_name": "test_collection" } `)
+    expected := "OK"
 
-  if result != expected {
-    t.Log("Expected: ", expected)
-    t.Log("Received: ", result)
-    t.Fail()
-  }
+    serv.Execute(ctx, `{ "operation": "DEFINE COLLECTION", "collection_name": "test_collection" } `)
+    result := serv.Execute(ctx, `{ "operation": "REMOVE COLLECTION", "collection_name": "test_collection" } `)
+
+    if result != expected {
+      t.Log("Expected: ", expected)
+      t.Log("Received: ", result)
+      t.Fail()
+    }
+  })
 }
 
 func TestInsertItem(t *testing.T) {
-  serv := setupService()
-  ctx := setupContext()
-  expected := "OK"
+  useTempStoreRepo("test", func(storeRepo sr.StoreRepo) {
+    serv := setupService(storeRepo)
+    ctx := setupContext()
 
-  serv.Execute(ctx, `{ "operation": "DEFINE COLLECTION", "collection_name": "test_collection" } `)
-  result := serv.Execute(ctx, `{ 
-    "operation": "STORE",
+    expected := "OK"
+
+    serv.Execute(ctx, `{ "operation": "DEFINE COLLECTION", "collection_name": "test_collection" } `)
+    result := serv.Execute(ctx, `{ 
+"operation": "STORE",
     "collection_name": "test_collection",
     "data": {"foo": "bar"}
   }`)
@@ -75,56 +99,61 @@ func TestInsertItem(t *testing.T) {
     t.Log("Received: ", result)
     t.Fail()
   }
+})
 }
 
 func TestRemoveSingleItem(t *testing.T) {
-  serv := setupService()
-  ctx := setupContext()
+  useTempStoreRepo("test", func(storeRepo sr.StoreRepo) {
+    serv := setupService(storeRepo)
+    ctx := setupContext()
 
-  serv.Execute(ctx, `{
-    "operation": "DEFINE COLLECTION",
+    serv.Execute(ctx, `{
+"operation": "DEFINE COLLECTION",
     "collection_name": "test_collection"
   }`)
   serv.Execute(ctx, `{ 
-    "operation": "STORE",
+"operation": "STORE",
     "collection_name": "test_collection",
     "data": {"foo": "bar"}
   }`)
   serv.Execute(ctx, `{ 
-    "operation": "STORE",
+"operation": "STORE",
     "collection_name": "test_collection",
     "data": {"foo": "bar", "key": "test_item"}
   }`)
   result := serv.Execute(ctx, `{ 
-    "operation": "REMOVE ITEMS",
+"operation": "REMOVE ITEMS",
     "collection_name": "test_collection",
     "limit": 1
   }`)
 
   if result != "Removed 1 items" { t.Error("Command does not work", result) }
+})
 }
 
 func TestRemovedItemsNotRetreivable(t *testing.T) {
-  serv := setupService()
-  ctx := setupContext()
-  expected := `[{"foo":"bar"}]`
+  useTempStoreRepo("test", func(storeRepo sr.StoreRepo) {
+    serv := setupService(storeRepo)
+    ctx := setupContext()
 
-  serv.Execute(ctx, `{
-    "operation": "DEFINE COLLECTION",
+    expected := `[{"foo":"bar"}]`
+
+    serv.Execute(ctx, `{
+"operation": "DEFINE COLLECTION",
     "collection_name": "test_collection"
   }`)
   serv.Execute(ctx, `{ 
-    "operation": "STORE",
+"operation": "STORE",
     "collection_name": "test_collection",
     "data": {"foo": "bar"}
   }`)
   serv.Execute(ctx, `{ 
-    "operation": "REMOVE ITEMS",
+"operation": "REMOVE ITEMS",
     "collection_name": "test_collection",
     "limit": 1
   }`)
   result := serv.Execute(ctx, `{ 
-    "operation": "FETCH",
+"operation": "FETCH",
     "collection_name": "test_collection",
     "limit": 1
   }`)
@@ -134,29 +163,32 @@ func TestRemovedItemsNotRetreivable(t *testing.T) {
     t.Log("Received: ", result)
     t.Fail()
   }
+})
 }
 
 func TestFetchSingleItem(t *testing.T) {
-  serv := setupService()
-  ctx := setupContext()
-  expected := `[{"foo":"bar"}]`
+  useTempStoreRepo("test", func(storeRepo sr.StoreRepo) {
+    serv := setupService(storeRepo)
+    ctx := setupContext()
 
-  serv.Execute(ctx, `{
-    "operation": "DEFINE COLLECTION",
+    expected := `[{"foo":"bar"}]`
+
+    serv.Execute(ctx, `{
+"operation": "DEFINE COLLECTION",
     "collection_name": "test_collection"
   }`)
   serv.Execute(ctx, `{ 
-    "operation": "STORE",
+"operation": "STORE",
     "collection_name": "test_collection",
     "data": {"foo": "bar"}
   }`)
   serv.Execute(ctx, `{ 
-    "operation": "STORE",
+"operation": "STORE",
     "collection_name": "test_collection",
     "data": {"pow": "blam"}
   }`)
   result := serv.Execute(ctx, `{ 
-    "operation": "FETCH",
+"operation": "FETCH",
     "collection_name": "test_collection",
     "limit": 1
   }`)
@@ -166,29 +198,32 @@ func TestFetchSingleItem(t *testing.T) {
     t.Log("Received: ", result)
     t.Fail()
   }
+})
 }
 
 func TestFetchItemWithEqualsWhereClause(t *testing.T) {
-  serv := setupService()
-  ctx := setupContext()
-  expected := `[{"foo":"bar","some":{"nested":{"path":"Hello World"}}}]`
+  useTempStoreRepo("test", func(storeRepo sr.StoreRepo) {
+    serv := setupService(storeRepo)
+    ctx := setupContext()
 
-  serv.Execute(ctx, `{
-    "operation": "DEFINE COLLECTION",
+    expected := `[{"foo":"bar","some":{"nested":{"path":"Hello World"}}}]`
+
+    serv.Execute(ctx, `{
+"operation": "DEFINE COLLECTION",
     "collection_name": "test_collection"
   }`)
   serv.Execute(ctx, `{ 
-    "operation": "STORE",
+"operation": "STORE",
     "collection_name": "test_collection",
     "data": {"should not": "fetch"}
   }`)
   serv.Execute(ctx, `{ 
-    "operation": "STORE",
+"operation": "STORE",
     "collection_name": "test_collection",
     "data": {"foo": "bar", "some": {"nested": {"path": "Hello World"}}}
   }`)
   result := serv.Execute(ctx, `{ 
-    "operation": "FETCH",
+"operation": "FETCH",
     "collection_name": "test_collection",
     "limit": 1,
     "where": [
@@ -201,29 +236,32 @@ func TestFetchItemWithEqualsWhereClause(t *testing.T) {
     t.Log("Received: ", result)
     t.Fail()
   }
+})
 }
 
 func TestFetchItemWithGreaterThanWhereClause(t *testing.T) {
-  serv := setupService()
-  ctx := setupContext()
-  expected := `[{"foo":"bar","my_num":23}]`
+  useTempStoreRepo("test", func(storeRepo sr.StoreRepo) {
+    serv := setupService(storeRepo)
+    ctx := setupContext()
 
-  serv.Execute(ctx, `{
-    "operation": "DEFINE COLLECTION",
+    expected := `[{"foo":"bar","my_num":23}]`
+
+    serv.Execute(ctx, `{
+"operation": "DEFINE COLLECTION",
     "collection_name": "test_collection"
   }`)
   serv.Execute(ctx, `{ 
-    "operation": "STORE",
+"operation": "STORE",
     "collection_name": "test_collection",
     "data": {"should not": "fetch"}
   }`)
   serv.Execute(ctx, `{ 
-    "operation": "STORE",
+"operation": "STORE",
     "collection_name": "test_collection",
     "data": {"foo": "bar", "my_num": 23}
   }`)
   result := serv.Execute(ctx, `{ 
-    "operation": "FETCH",
+"operation": "FETCH",
     "collection_name": "test_collection",
     "limit": 1,
     "where": [
@@ -236,34 +274,37 @@ func TestFetchItemWithGreaterThanWhereClause(t *testing.T) {
     t.Log("Received: ", result)
     t.Fail()
   }
+})
 }
 
 func TestFetchItemsMultipleWhereClause(t *testing.T) {
-  serv := setupService()
-  ctx := setupContext()
-  expected := `[{"health":50,"match":"me"},{"health":99,"match":"me"}]`
+  useTempStoreRepo("test", func(storeRepo sr.StoreRepo) {
+    serv := setupService(storeRepo)
+    ctx := setupContext()
 
-  serv.Execute(ctx, `{
-    "operation": "DEFINE COLLECTION",
+    expected := `[{"health":50,"match":"me"},{"health":99,"match":"me"}]`
+
+    serv.Execute(ctx, `{
+"operation": "DEFINE COLLECTION",
     "collection_name": "test_collection"
   }`)
   serv.Execute(ctx, `{ 
-    "operation": "STORE",
+"operation": "STORE",
     "collection_name": "test_collection",
     "data": {"health": 50, "match":"me"}
   }`)
   serv.Execute(ctx, `{ 
-    "operation": "STORE",
+"operation": "STORE",
     "collection_name": "test_collection",
     "data": {"health": 99, "match":"me"}
   }`)
   serv.Execute(ctx, `{ 
-    "operation": "STORE",
+"operation": "STORE",
     "collection_name": "test_collection",
     "data": {"foo": "choo", "match":"me"}
   }`)
   result := serv.Execute(ctx, `{ 
-    "operation": "FETCH",
+"operation": "FETCH",
     "collection_name": "test_collection",
     "where": [
       { "path": ["match"], "operator": "=", "value": "me" },
@@ -276,23 +317,25 @@ func TestFetchItemsMultipleWhereClause(t *testing.T) {
     t.Log("Received: ", result)
     t.Fail()
   }
+})
 }
 
 func TestUpdateItem(t *testing.T) {
-  serv := setupService()
-  ctx := setupContext()
+  useTempStoreRepo("test", func(storeRepo sr.StoreRepo) {
+    serv := setupService(storeRepo)
+    ctx := setupContext()
 
-  serv.Execute(ctx, `{
-    "operation": "DEFINE COLLECTION",
+    serv.Execute(ctx, `{
+"operation": "DEFINE COLLECTION",
     "collection_name": "test_collection"
   }`)
   serv.Execute(ctx, `{ 
-    "operation": "STORE",
+"operation": "STORE",
     "collection_name": "test_collection",
     "data": {"foo": "bar"}
   }`)
   updateResult := serv.Execute(ctx, `{ 
-    "operation": "UPDATE ITEM",
+"operation": "UPDATE ITEM",
     "collection_name": "test_collection",
     "data": {"foo": "new value"}
   }`)
@@ -300,7 +343,7 @@ func TestUpdateItem(t *testing.T) {
   if updateResult != "Updated 1 items" { t.Error("Command does not work", updateResult) }
 
   fetchResult := serv.Execute(ctx, `{ 
-    "operation": "FETCH",
+"operation": "FETCH",
     "collection_name": "test_collection",
     "limit": 1,
     "where": [
@@ -314,4 +357,6 @@ func TestUpdateItem(t *testing.T) {
     t.Log("Received: ", fetchResult)
     t.Fail()
   }
+})
+
 }

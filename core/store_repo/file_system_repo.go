@@ -21,7 +21,7 @@ func (sr FileSystemRepo) FindByName(name string) (foundStore *str.Store, err err
   return findByName(sr.Stores, name)
 }
 
-func (sr FileSystemRepo) Create(name string) (store *str.Store, err error) {
+func (sr *FileSystemRepo) Create(name string) (store *str.Store, err error) {
   existingStore, _ := findByName(sr.Stores, name)
 
   if existingStore != nil {
@@ -62,5 +62,7 @@ func InitializeFromDir(dir string) StoreRepo {
     stores = append(stores, str.BuildStore(name, dir + "/" + name))
   }
 
-  return FileSystemRepo{Dir: dir, Stores: stores}
+  repo := &FileSystemRepo{Dir: dir, Stores: stores}
+
+  return repo
 }
