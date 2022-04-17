@@ -5,6 +5,7 @@ import (
 
 	comp "rygel/comparisons"
 	cs "rygel/core/store"
+	"rygel/core"
 	"rygel/common"
 )
 
@@ -17,19 +18,23 @@ type UpdateItemCommand struct {
 }
 
 func (c UpdateItemCommand) Execute() (string, bool) {
+  collection := c.Store.Collections[c.CollectionName]
   numFoundItems := 0
 
-  for i := 0; i < len(c.Store.Collections[c.CollectionName].Items); i++ {
+  f := func(item *core.Item) bool {
     if numFoundItems == c.Limit {
-      break
+      return false
     }
 
-    if c.Predicates.SatisfiedBy(c.Store.Collections[c.CollectionName].Items[i]) {
-      c.Store.Collections[c.CollectionName].Items[i].SetData(c.Data)
-
+    if c.Predicates.SatisfiedBy(item) {
+      item.SetData(c.Data)
       numFoundItems += 1
     }  
+
+    return true
   }
+
+  collection.Enumerate(f, false)
 
   return "Updated " + strconv.Itoa(numFoundItems) + " items", true
 }

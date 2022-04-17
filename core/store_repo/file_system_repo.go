@@ -1,12 +1,11 @@
 package store_repo
 
 import (
+  "fmt"
   "os"
   "rygel/common"
-	"path/filepath"
   "errors"
   "io/ioutil"
-  "strings"
   str "rygel/core/store"
 )
 
@@ -24,9 +23,9 @@ func (sr FileSystemRepo) FindByName(name string) (foundStore *str.Store, err err
 }
 
 func (sr FileSystemRepo) Create(name string) (store *str.Store, err error) {
-  _, err = findByName(sr.Stores, name)
+  existingStore, _ := findByName(sr.Stores, name)
 
-  if err != nil {
+  if existingStore != nil {
     return nil, errors.New("Store already exists")
   }
 
@@ -36,12 +35,35 @@ func (sr FileSystemRepo) Create(name string) (store *str.Store, err error) {
 
   common.HandleErr(err)
 
-  _, err2 := f.WriteString(name + "\n")
-  common.HandleErr(err2)
-  builtStore := str.BuildStore(name)
+  err = os.Mkdir(sr.Dir + "/" + name, 0755)
+
+  common.HandleErr(err)
+
+  _, err = f.WriteString(name + "\n")
+
+  common.HandleErr(err)
+
+  builtStore := str.BuildStore(name, sr.Dir + "/" + name)
+
   sr.appendStore(builtStore)
 
   return &builtStore, nil
+}
+
+func storePaths(dir string) []string {
+  dirs := []string{}
+
+  files, err := ioutil.ReadDir(dir)
+
+  common.HandleErr(err)
+
+  for _, file := range files {
+    if file.IsDir() {
+      dirs = append(dirs, file.Name())
+    }
+  }
+  
+  return dirs
 }
 
 func InitializeFromDir(dir string) StoreRepo {
@@ -51,20 +73,13 @@ func InitializeFromDir(dir string) StoreRepo {
     os.MkdirAll(dir, 0700) 
   }
 
-  err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
-    if info.IsDir() {
-      return nil
-    }
+  paths := storePaths(dir)
 
-    out, err := ioutil.ReadFile(path)
-    common.HandleErr(err)
-    name := strings.TrimRight(string(out), "\n")
-    stores = append(stores, str.BuildStore(name))
+  for _, name := range paths {
+    fmt.Println(name)
 
-    return nil
-  })
-
-  common.HandleErr(err)
+    stores = append(stores, str.BuildStore(name, dir + "/" + name))
+  }
 
   return FileSystemRepo{Dir: dir, Stores: stores}
 }

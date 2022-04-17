@@ -2,26 +2,36 @@ package store
 
 import (
 	"fmt"
-  "rygel/core"
+	"os"
+	"rygel/core"
+  "io/ioutil"
+	"rygel/common"
+
+	coll "rygel/infrastructure/collection_persistence"
 )
 
 type Store struct {
   Name string
-  Collections map[string]core.Collection
+  Collections map[string]coll.CollectionPersistence
+  locationOnDisk string
 }
 
-func (s *Store) referenceCollection(collectionName string) (*core.Collection, error) {
+func (s *Store) referenceCollection(collectionName string) (*coll.CollectionPersistence, error) {
   collection, ok := s.Collections[collectionName]
 
   if ok {
     return &collection, nil
   } else {
-    return &core.Collection{}, fmt.Errorf("Could not find collection")
+    return &coll.CollectionPersistence{}, fmt.Errorf("Could not find collection")
   }
 }
 
 func (s *Store) CreateCollection(collectionName string) bool {
-  s.Collections[collectionName] = core.BuildCollection(collectionName)
+  filePath := s.locationOnDisk + "/" + collectionName
+
+  os.Mkdir(filePath, 0755)
+  s.Collections[collectionName] = coll.New(collectionName, filePath)
+
   return true
 }
 
@@ -44,18 +54,61 @@ func (s *Store) InsertItem(collectionName string, item core.Item) bool {
     return false
   }
 
-  if !collection.InsertItem(item) {
-    fmt.Println("Could not insert item into collection")
-    return false
-  }
+  collection.InsertItem(item)
 
   s.Collections[collectionName] = collection
   
   return true
 }
 
-func BuildStore(name string) Store {
-  store := Store{Name: name, Collections: map[string]core.Collection{}}
+func collectionPaths(dir string) []string {
+  dirs := []string{}
 
-  return store
+  files, err := ioutil.ReadDir(dir)
+
+  common.HandleErr(err)
+
+  for _, file := range files {
+    if file.IsDir() {
+      dirs = append(dirs, file.Name())
+    }
+  }
+  
+  return dirs
+}
+
+func buildExistingCollections(storeDir string) map[string]coll.CollectionPersistence {
+  collections := map[string]coll.CollectionPersistence{}
+
+  fmt.Println("####")
+  fmt.Println(storeDir)
+  fmt.Println("####")
+
+  collectionPaths := collectionPaths(storeDir)
+
+  for _, name := range collectionPaths {
+    collections[name] = coll.New(name, storeDir + "/" + name)
+  }
+
+  // err := filepath.Walk(storeDir, func(path string, info os.FileInfo, err error) error {
+
+  //   // splits := strings.Split(path, "/")
+  //   // name := splits[len(splits)-1]
+
+  //   collections[name] = coll.New(name, path)
+
+  //   return nil
+  // })
+
+  // if err != nil { panic(err) }
+
+  return collections
+}
+
+func BuildStore(name string, locationOnDisk string) Store {
+  return Store{
+    Name: name,
+    Collections: buildExistingCollections(locationOnDisk),
+    locationOnDisk: locationOnDisk,
+  }
 }

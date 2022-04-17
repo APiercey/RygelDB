@@ -14,24 +14,23 @@ type FetchCommand struct {
   Predicates comp.PredicateCollection
 }
 
-func (c FetchCommand) candidateItems(s *cs.Store) []core.Item {
-  collection := s.Collections[c.CollectionName]
-
-  return collection.Items
-}
-
 func (c FetchCommand) Execute() (string, bool) {
   matchingDataOfItems := []map[string]interface{}{}
 
-  for _, item := range c.candidateItems(c.Store) {
-    if len(matchingDataOfItems) == c.Limit {
-      break
-    }
+  // TODO: Function to access collection
+  collection := c.Store.Collections[c.CollectionName]
+
+  f := func(item *core.Item) bool {
+    if len(matchingDataOfItems) == c.Limit { return false }
 
     if c.Predicates.SatisfiedBy(item) {
       matchingDataOfItems = append(matchingDataOfItems, item.Data)
     }
+
+    return true
   }
+
+  collection.Enumerate(f, false)
 
   out, err := json.Marshal(matchingDataOfItems)
 

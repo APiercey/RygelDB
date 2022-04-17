@@ -9,11 +9,7 @@ type PredicateCollection struct {
   predicates []Predicate
 }
 
-func (pc PredicateCollection) SatisfiedBy(item core.Item) bool {
-	if len(pc.predicates) == 0 {
-		return true
-	}
-
+func (pc PredicateCollection) SatisfiedBy(item *core.Item) bool {
 	for _, wp := range pc.predicates {
 		if !wp.SatisfiedBy(item) {
 			return false

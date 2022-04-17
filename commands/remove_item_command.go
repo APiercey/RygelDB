@@ -16,29 +16,24 @@ type RemoveItemCommand struct {
 }
 
 func (c RemoveItemCommand) Execute() (string, bool) {
+  collection := c.Store.Collections[c.CollectionName]
   numFoundItems := 0
 
-  keptItems := []core.Item{}
-  for _, item := range c.Store.Collections[c.CollectionName].Items {
-    keep := true
-
+  f := func(item *core.Item) bool {
     if numFoundItems == c.Limit {
-      keep = false
+      return false
     }
 
-    if !c.Predicates.SatisfiedBy(item) {
-      keep = false
-    }
 
-    if keep {
-      keptItems = append(keptItems, item)
+    if c.Predicates.SatisfiedBy(item) {
+      item.FlagToRemove()
       numFoundItems += 1
     }
+
+    return true
   }
 
-  collection := c.Store.Collections[c.CollectionName]
-  collection.ReplaceItems(keptItems)
-  c.Store.Collections[c.CollectionName] = collection
+  collection.Enumerate(f, false)
 
   return "Removed " + strconv.Itoa(numFoundItems) + " items", true
 }

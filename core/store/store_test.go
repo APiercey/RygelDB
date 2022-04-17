@@ -7,7 +7,7 @@ import (
 )
 
 func TestCreateCollection(t *testing.T) {
-  store := BuildStore("test")
+  store := BuildStore("test", "./")
 
   if !store.CreateCollection("flowers") {
     t.Log("Could not create collection")
@@ -21,7 +21,7 @@ func TestCreateCollection(t *testing.T) {
 }
 
 func TestStoreInsertItem(t *testing.T) {
-  store := BuildStore("test")
+  store := BuildStore("test", "./")
   store.CreateCollection("flowers")
 
   item, _ := core.BuildItem(common.Data{
@@ -34,9 +34,14 @@ func TestStoreInsertItem(t *testing.T) {
     t.Fail()
   }
 
-  if len(store.Collections["flowers"].Items) != 1 {
+  amount := 0
+  store.Collections["flowers"].Enumerate(func(item *core.Item) bool {
+    amount += 1
+    return true
+  }, false)
+
+  if amount != 1 {
     t.Log("Item not present in collection", item)
     t.Fail()
   }
-
 }

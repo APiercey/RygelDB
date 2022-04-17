@@ -24,7 +24,7 @@ func (sr InMemoryRepo) Create(name string) (store *str.Store, err error) {
     return nil, errors.New("Store already exists")
   }
 
-  builtStore := str.BuildStore(name)
+  builtStore := str.BuildStore(name, "./" + name)
   sr.appendStore(builtStore)
 
   return &builtStore, nil

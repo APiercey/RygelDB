@@ -18,7 +18,7 @@ func buildConnectionHandler(application *application.Application) func(conn net.
       return
     }
 
-    ctx := context.Context{SelectedStore: "db_info"}
+    ctx := context.Context{SelectedStore: "test"}
 
     for {
       buffer, err := bufio.NewReader(conn).ReadBytes('\n')
@@ -41,15 +41,16 @@ func main() {
 
   go func() { for { application.CommandExecutor.Process() } }()
 
-  if _, err := application.StoreRepo.FindByName("db_info"); err != nil {
-    _, err = application.StoreRepo.Create("db_info")
+  if _, err := application.StoreRepo.FindByName("test"); err != nil {
+    _, err = application.StoreRepo.Create("test")
 
     if err != nil {
       panic(err)
     }
   }
 
-  application.StatementReplay.Replay(context.Context{SelectedStore: "db_info"})
+  // Should only happen on replication
+  // application.StatementReplay.Replay(context.Context{SelectedStore: "test"})
 
   connectionHandler := buildConnectionHandler(
     &application,

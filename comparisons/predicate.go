@@ -11,7 +11,7 @@ type Predicate struct {
 	Value interface{} 
 }
 
-func (wp Predicate) SatisfiedBy(item core.Item) bool {
+func (wp Predicate) SatisfiedBy(item *core.Item) bool {
   value, presence := item.PluckValueOnPath(wp.Path)
 
   if !presence { return false }

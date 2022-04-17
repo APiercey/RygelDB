@@ -14,7 +14,7 @@ func (i Item) WasUpdated() bool {
   return i.wasUpdated
 }
 
-func (i Item) ShouldRemove() bool {
+func (i Item) ShouldBeRemoved() bool {
   return i.flaggedToRemove
 }
 
@@ -50,5 +50,5 @@ func (i Item) PluckValueOnPath(dp common.DataPath) (interface{}, bool) {
 }
 
 func BuildItem(data common.Data) (Item, error) {
-  return Item{Data: data, wasUpdated: false}, nil
+  return Item{Data: data, wasUpdated: false, flaggedToRemove: false}, nil
 }
